@@ -63,12 +63,16 @@ std::map<int, TLE> readTlesFromFile(const char* fileName)
             
             TLE tle = TLE(lineptr[0], lineptr[1], lineptr[2]); // neues TLE Objekt anlegen & Zeilen an Konstruktor übergeben...
             
-            std::pair<int, TLE> _pair(key, tle); // ... neues pair Objekt anlegen mit TLE Objekt füllen, Zähler inkremntieren...
+            // prüfen ob Zeile 2 und 3 gültig sind, falls nicht, nicht parsen und TLE nicht aufnehmen:
+            if (tle.isTleLineValid(lineptr[1]) && tle.isTleLineValid(lineptr[2])) {
+                
+                std::pair<int, TLE> _pair(key, tle); // ... neues pair Objekt anlegen mit TLE Objekt füllen, Zähler inkremntieren...
             
-            TLEs.insert(_pair); // ... pair Objekt in map einfügen
-            
+                TLEs.insert(_pair); // ... pair Objekt in map einfügen
 
-            //break; // zu Testzwecken entkommentieren, dann wird nur ein TLE gelesen
+            }
+
+            //break; // zu Testzwecken entkommentieren, dann wird nur ein (gültiges) TLE gelesen
         };
     }
     catch(const std::exception& e)
@@ -239,20 +243,52 @@ double ny(double e, double M) // Berechnet mittels Newton-Verfahren und numerisc
     auto F = [e, M] (double x) { return (1.0 * x - 1.0 * e * sin(x) - 1.0 * M); };
     auto f = [e] (double x) { return (1.0 - 1.0 * e * cos(x)); };
 
-    do
+    do // Newton Verfahren
     {
         if (f(x0) == 0) break; // Division durch Null abfangen
         
         x0 = x0 - (F(x0)/f(x0)); // Newton-Verfahren
     } while( abs(F(x0)) > pow(10, -15) );
 
-    return x0;
+    // extrenztische Anomalie in wahre Anomalie umrechnen:
+    double trueAnomalie = 2 * atan( tan(x0 / 2) * sqrt( ( (1 + e) / (1 - e) ) ) );
+
+    return trueAnomalie;
+}
+
+double getconversion(double value) // Wandelt Zahl von [rev/day] in [rad/min] um
+{
+    return (value * (2 * M_PI) / (60 * 24));
+}
+
+double getrad(double angle) // Wandelt Winkel in [rad] um
+{
+    return (angle * M_PI / 180.0);
+}
+
+int checkyear(unsigned int value)
+{
+    // NORAD definiert Epochen wie folgt:
+    // 57 - 99 entspricht 1957 - 1999
+    // 00 - 56 entspricht 2000 - 2056
+    if (value < 57)
+    {
+        return 2000 + value;
+    }
+    else if (value > 56 )
+    {
+        return 1900 + value;
+    }
+    else
+    {
+        return value;
+    }
 }
 
 int main(void)
 {
     // Standartausgabe & Einlesen des Dateipfades inkl. -name
-    std::cout << "\n R A U M F L U G B E T R I E B\n\t************************\n\t\t    ************\n\t\t\t  ******\n Dateipfad TLEs: " << std::endl;
+    std::cout << "\n R A U M F L U G B E T R I E B\n\t************************\n\t\t    ************\n\t\t\t  ******\n Dateipfad TLEs: ";
     std::string filename;
 
     // Pfad einlesen und ...

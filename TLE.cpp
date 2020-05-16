@@ -44,7 +44,7 @@ void TLE::populateTle(char* line0, char* line1, char* line2) // wird von Konstru
     char* intDesignator_ptr = getSubString(line1, International_Designator_Year, International_Designator_PieceOfLaunch_End);
     stringcopy(intDesignator_ptr, this->intDesignator);
     // year
-    this->year = getInteger(line1, Epoch_Year, Epoch_Year_End) + 2000; // + 2000 für schönere Jahres-Darstellung
+    this->year = checkyear(getInteger(line1, Epoch_Year, Epoch_Year_End));
     // dayFraction
     this->dayFraction = getDouble(line1, Epoch_Day_Fraction, Epoch_Day_Fraction_End, false);
     // bStar
@@ -61,7 +61,7 @@ void TLE::populateTle(char* line0, char* line1, char* line2) // wird von Konstru
     // meanAnomaly
     this->meanAnomaly = getDouble(line2, Mean_Anomaly, Mean_Anomaly_End, false);
     // meanMotion
-    this->meanMotion = getDouble(line2, Mean_Motion, Mean_Motion_End, false);
+    this->meanMotion = getconversion(getDouble(line2, Mean_Motion, Mean_Motion_End, false));
 
     // Prüfen ob eine Zeile ungültig ist (Aussagenlogik: !A || !B == !(A && B) )
     if ( ! (isTleLineValid(line1) && isTleLineValid(line2)))
@@ -76,6 +76,10 @@ void TLE::populateTle(char* line0, char* line1, char* line2) // wird von Konstru
 
 bool TLE::isTleLineValid(const char* line) // prüft für Zeile Gültigkeit
 {
+    // Prüfen ob die Zeilen länge genau 69 Zeichen lang ist:
+    //if (strlen(line) != 69) return false;
+
+
     int sum = 0; // summiert alles auf (Feldwerte)
 
     // Fallunterscheidung: Ziffern addieren, Minuszeichen mit '1' bewerten, restliche Zeichen ignorieren
@@ -95,16 +99,7 @@ bool TLE::isTleLineValid(const char* line) // prüft für Zeile Gültigkeit
 
     sum %= 10; // modulo 10
 
-    // Zwei Bedingungen prüfen: - Ist Zeilenlänge gleich mit 70 (insg. Länge einer Zeile)
-    //                          - Ist Checksum Vergleich korrekt
-    if ( (std::strlen(line) == 70) && (std::atoi(&line[68]) == sum) )
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (line[68] - '0') == sum;
 }
 
 void TLE::print(void) // Ausgabe gesamtes TLE

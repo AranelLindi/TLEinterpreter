@@ -21,6 +21,12 @@ char* convertConstCharPtrToCharPtr(std::string sstring); // string.c_string (con
 
 void stringcopy(char* source, char* dest); // kopiert ein char-Array in ein anderes
 
+double getconversion(double value); // Wandelt Einheit [rev/day] in [rad/min] um
+
+double getrad(double angle); // Wandelt Winkel in [rad] um
+
+int checkyear(unsigned int value);
+
 // ################################
 // zu Aufgabe 1.2:
 double a(double T); // Berechnet große Halbachse
