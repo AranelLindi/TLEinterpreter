@@ -24,6 +24,7 @@ struct Tle
     bool valid = false; ///< indicates of the TLE is valid
 
     public:
+    // Getter
     std::string getSatelliteName();
     int getSatelliteNr();
     std::string getintDesignator();

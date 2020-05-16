@@ -74,6 +74,7 @@ void Tle::populateTle(char* line0, char* line1, char* line2) // wird von Konstru
     }
 }
 
+// Getter
 std::string Tle::getSatelliteName() { return std::string(this->satelliteName); }
 int Tle::getSatelliteNr() { return this->satelliteNr; }
 std::string Tle::getintDesignator() { return std::string(this->intDesignator); }
