@@ -12,7 +12,7 @@ extern bool SONATE_only; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenomme
 
 // Überladungen der in der Headerdatei (TLE.h) definierten Funktionen
 
-TLE::TLE(char* line0, char* line1, char* line2) // Konstruktor
+Tle::Tle(char* line0, char* line1, char* line2) // Konstruktor
 {
     // Variablen initialisieren (Arrays ausgenommen, (wurden schon))
     satelliteNr = 0;
@@ -30,7 +30,7 @@ TLE::TLE(char* line0, char* line1, char* line2) // Konstruktor
     this->populateTle(line0, line1, line2);
 }
 
-void TLE::populateTle(char* line0, char* line1, char* line2) // wird von Konstruktor aufgerufen
+void Tle::populateTle(char* line0, char* line1, char* line2) // wird von Konstruktor aufgerufen
 {
     // Daten aus Zeilen extrahieren und in entsprechenden Variablen speichern:
 
@@ -74,7 +74,22 @@ void TLE::populateTle(char* line0, char* line1, char* line2) // wird von Konstru
     }
 }
 
-bool TLE::isTleLineValid(const char* line) // prüft für Zeile Gültigkeit
+// Getter
+std::string Tle::getSatelliteName() { return std::string(this->satelliteName); }
+int Tle::getSatelliteNr() { return this->satelliteNr; }
+std::string Tle::getintDesignator() { return std::string(this->intDesignator); }
+int Tle::getYear() { return this->year; }
+double Tle::getDayFraction() { return this->dayFraction; }
+double Tle::getbStar() { return this->bStar; }
+
+double Tle::getInclination() { return this->inclination; }
+double Tle::getRaan() { return this->raan; }
+double Tle::getEccentricity() { return this->eccentricity; }
+double Tle::getArgumentOfPerigee() { return this->argumentOfPerigee; }
+double Tle::getMeanAnomaly() { return this->meanAnomaly; }
+double Tle::getMeanMotion() { return this->meanMotion; }
+
+bool Tle::isTleLineValid(const char* line) // prüft für Zeile Gültigkeit
 {
     // Prüfen ob die Zeilen länge genau 69 Zeichen lang ist:
     //if (strlen(line) != 69) return false;
@@ -102,7 +117,7 @@ bool TLE::isTleLineValid(const char* line) // prüft für Zeile Gültigkeit
     return (line[68] - '0') == sum;
 }
 
-void TLE::print(void) // Ausgabe gesamtes TLE
+void Tle::print(void) // Ausgabe gesamtes TLE
 {
     std::cout.precision(15); // Ändert die Anzahl der ausgegebenen Nachkommastellen.
 

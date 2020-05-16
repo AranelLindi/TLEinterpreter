@@ -1,8 +1,11 @@
 #ifndef TLE_H
 #define TLE_H
 
-struct TLE
+#include <string>
+
+struct Tle
 {
+    private:
     // Variablen
     char satelliteName[25] = { '\0' }; ///< name of the satellite
     int satelliteNr; ///< satellite catalog nr
@@ -20,9 +23,26 @@ struct TLE
 
     bool valid = false; ///< indicates of the TLE is valid
 
+    public:
+    // Getter
+    std::string getSatelliteName();
+    int getSatelliteNr();
+    std::string getintDesignator();
+    int getYear();
+    double getDayFraction();
+    double getbStar();
+
+    double getInclination();
+    double getRaan();
+    double getEccentricity();
+    double getArgumentOfPerigee();
+    double getMeanAnomaly();
+    double getMeanMotion();
+
+
     // ******
 
-    TLE(char* line0, char* line1, char* line2); // Konstruktor
+    Tle(char* line0, char* line1, char* line2); // Konstruktor
     
     // Funktionen
     void populateTle(char* line0, char* line1, char* line2); // wird von Konstruktor aufgerufen
