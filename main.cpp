@@ -18,12 +18,12 @@ int main(void)
     if (filename.length() == 0) return 1; // EXIT_FAILURE    
     
     // Daten aus Datei einlesen und map erzeugen:
-    std::map<int, TLE> TLEs = readTlesFromFile(filename.c_str());
+    std::map<int, Tle> TLEs = readTlesFromFile(filename.c_str());
 
     // Iteriert durch map und löst für jedes Element Funktion print() aus. (Lambda-Ausdruck! Erfordert C++11!) 
-    std::for_each(TLEs.begin(), TLEs.end(), [](std::pair<int, TLE> element) { 
-        TLE currentTLE = element.second; // gibt zweiten Typ der map zurück (TLE)
-        if(SONATE_only && (currentTLE.satelliteNr != SONATE_NUMBER)) goto next;
+    std::for_each(TLEs.begin(), TLEs.end(), [](std::pair<int, Tle> element) { 
+        Tle currentTLE = element.second; // gibt zweiten Typ der map zurück (TLE)
+        if(SONATE_only && (currentTLE.getSatelliteNr() != SONATE_NUMBER)) goto next;
         currentTLE.print();  // ruft print()-Funktion in struct auf
         next:;
     });
