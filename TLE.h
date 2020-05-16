@@ -3,7 +3,7 @@
 
 #include <string>
 
-struct Tle
+class Tle
 {
     private:
     // Variablen
