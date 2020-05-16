@@ -80,7 +80,7 @@ int Tle::getSatelliteNr() { return this->satelliteNr; }
 std::string Tle::getintDesignator() { return std::string(this->intDesignator); }
 int Tle::getYear() { return this->year; }
 double Tle::getDayFraction() { return this->dayFraction; }
-double Tle::getbStar() { return this->bStar; }
+double Tle::getBstar() { return this->bStar; }
 
 double Tle::getInclination() { return this->inclination; }
 double Tle::getRaan() { return this->raan; }
