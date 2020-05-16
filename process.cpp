@@ -85,7 +85,7 @@ std::map<int, TLE> readTlesFromFile(const char* fileName)
     return TLEs; // fertige map zurückgeben
 }
 
-char* getSubString(const char* source, int start, int end) // Gibt einen Zeiger auf einen Teilstring einer Zeile zurück.
+inline char* getSubString(const char* source, int start, int end) // Gibt einen Zeiger auf einen Teilstring einer Zeile zurück.
 {
     int delta = end - start + 1; // Länge des zurückgegebenen Strings. +1 folgt, da statt [start, end) dann [start, end] zurückgegeben wird
     

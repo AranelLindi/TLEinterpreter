@@ -13,7 +13,7 @@ const double GM = 3.986005e14; // Gravitationskonstante * Masse d. Erde
 // Funktionenrümpfe
 std::map<int, TLE> readTLesFromFile(const char* filename); // Aufgabenstellung
 
-char* getSubString(const char* source, int start, int end); // Substring aus Zeile
+inline char* getSubString(const char* source, int start, int end); // Substring aus Zeile
 int getInteger(const char* source, int start, int end); // Integer aus Substring
 double getDouble(const char* source, int start, int end, bool leadingdecimalpointassumed); // Double aus Substring
 
