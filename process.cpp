@@ -19,11 +19,11 @@
 bool SONATE_only = false; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll
 
 
-std::map<int, TLE> readTlesFromFile(const char* fileName)
+std::map<int, Tle> readTlesFromFile(const char* fileName)
 {
     std::ifstream file; // Datei mit TLEs
     
-    std::map<int, TLE> TLEs; // Map anlegen
+    std::map<int, Tle> TLEs; // Map anlegen
 
     bool lastTle = false; // für Abbruchbedingung
 
@@ -60,12 +60,12 @@ std::map<int, TLE> readTlesFromFile(const char* fileName)
 
             key = getInteger(lineptr[1], Satellite_Number, Satellite_Number_End); // Satelliten-Nr. aus zweiten Zeile extrahieren
             
-            TLE tle = TLE(lineptr[0], lineptr[1], lineptr[2]); // neues TLE Objekt anlegen & Zeilen an Konstruktor übergeben...
+            Tle tle = Tle(lineptr[0], lineptr[1], lineptr[2]); // neues TLE Objekt anlegen & Zeilen an Konstruktor übergeben...
             
             // prüfen ob Zeile 2 und 3 gültig sind, falls nicht, nicht parsen und TLE nicht aufnehmen:
             if (tle.isTleLineValid(lineptr[1]) && tle.isTleLineValid(lineptr[2])) {
                 
-                std::pair<int, TLE> _pair(key, tle); // ... neues pair Objekt anlegen mit TLE Objekt füllen, Zähler inkremntieren...
+                std::pair<int, Tle> _pair(key, tle); // ... neues pair Objekt anlegen mit TLE Objekt füllen, Zähler inkremntieren...
             
                 TLEs.insert(_pair); // ... pair Objekt in map einfügen
 

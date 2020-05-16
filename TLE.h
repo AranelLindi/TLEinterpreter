@@ -30,7 +30,7 @@ struct Tle
     std::string getintDesignator();
     int getYear();
     double getDayFraction();
-    double getbStar();
+    double getBstar();
 
     double getInclination();
     double getRaan();
@@ -41,7 +41,7 @@ struct Tle
 
 
     // ******
-
+    Tle(); // Standartkonstruktor (wird von Interpreter nicht verwendet!)
     Tle(char* line0, char* line1, char* line2); // Konstruktor
     
     // Funktionen
