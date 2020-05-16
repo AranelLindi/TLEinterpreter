@@ -4,3 +4,4 @@ Für Ausgabe, aller TLEs, Wert auf ‚false‘ setzen.
 - Stefan Lindörfer
 ----------------
 16. Mai 2020: Korrekturänderungen (Uni) vorgenommen
+Main Funktion ausgelagert, Dateien umbenannt

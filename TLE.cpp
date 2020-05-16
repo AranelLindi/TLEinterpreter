@@ -6,7 +6,7 @@
 // eigener Code
 #include "TLE.h"
 #include "cdefines.h"
-#include "main.h"
+#include "process.h"
 
 extern bool SONATE_only; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll
 
