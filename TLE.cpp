@@ -113,7 +113,8 @@ bool Tle::isTleLineValid(const char* line) // prüft für Zeile Gültigkeit
     }
 
     sum %= 10; // modulo 10
-
+    
+    // rechnet Character auf Position 68 mit - '0' in eine Zahl um:
     return (line[68] - '0') == sum;
 }
 
