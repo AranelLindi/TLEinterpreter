@@ -1,7 +1,16 @@
 #ifndef TLE_H
 #define TLE_H
 
-#include <string>
+
+// Standartbibliotheken
+#include <iostream> // Konsolenausgabe ( hier mit printf() )
+#include <ctype.h> // Prüfungen von Charactern
+#include <cstring> // Länge von char-Arrays
+
+// eigener Code
+#include "cdefines.h"
+//#include "process.h"
+
 
 class Tle
 {

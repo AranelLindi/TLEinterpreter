@@ -1,12 +1,4 @@
-// Standartbibliotheken
-#include <iostream> // Konsolenausgabe ( hier mit printf() )
-#include <ctype.h> // Prüfungen von Charactern
-#include <cstring> // Länge von char-Arrays
-
-// eigener Code
 #include "TLE.h"
-#include "cdefines.h"
-#include "process.h"
 
 extern bool SONATE_only; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll
 

@@ -1,19 +1,6 @@
 // Stefan Lindörfer
 
-
-// Standartbibliotheken
-#include <fstream> // um txt-Datei zu lesen
-#include <cstring> // bequemere String-Verarbeitung
-#include <cmath> // für Potenzierung & trig. Fkt
-#include <algorithm> // für for_each 
-
-// eigener Code
 #include "process.h"
-#include "cdefines.h"
-#include "TLE.h"
-
-#include "TLE.cpp"
-
 
 // GLOBALE VARIABLEN
 bool SONATE_only = false; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll
