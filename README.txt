@@ -9,5 +9,5 @@ g++ -o [execute-Name] main.cpp TLE.cpp process.cpp -std=c++17
 
 - Stefan Lindörfer
 ----------------
-16. Mai 2020: Korrekturänderungen (Uni) vorgenommen
+26. Mai 2020: Korrekturänderungen (Uni) vorgenommen
 Main Funktion ausgelagert, Dateien umbenannt
