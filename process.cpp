@@ -1,10 +1,10 @@
-// Stefan Lindörfer
+// eigener Code
+#include "process.h" // HEADER
 
-#include "process.h"
 
 // GLOBALE VARIABLEN
-bool SONATE_only = false; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll
-
+// Ist absichltich hier deklariert und im Header mit extern definiert! (Standartvorgehensweise)
+bool SONATE_only = false; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll. Für regulären Betrieb nicht beachten.
 
 std::map<int, Tle> readTlesFromFile(const char* fileName)
 {
@@ -72,7 +72,7 @@ std::map<int, Tle> readTlesFromFile(const char* fileName)
     return TLEs; // fertige map zurückgeben
 }
 
-inline char* getSubString(const char* source, int start, int end) // Gibt einen Zeiger auf einen Teilstring einer Zeile zurück.
+char* getSubString(const char* source, int start, int end) // Gibt einen Zeiger auf einen Teilstring einer Zeile zurück.
 {
     int delta = end - start + 1; // Länge des zurückgegebenen Strings. +1 folgt, da statt [start, end) dann [start, end] zurückgegeben wird
     
@@ -234,7 +234,7 @@ double ny(double e, double M) // Berechnet mittels Newton-Verfahren und numerisc
         if (f(x0) == 0) break; // Division durch Null abfangen
         
         x0 = x0 - (F(x0)/f(x0)); // Newton-Verfahren
-    } while( abs(F(x0)) > pow(10, -15) );
+    } while( std::fabs(F(x0)) > pow(10, -15) );
 
     // extrenztische Anomalie in wahre Anomalie umrechnen:
     double trueAnomalie = 2 * atan( tan(x0 / 2) * sqrt( ( (1 + e) / (1 - e) ) ) );

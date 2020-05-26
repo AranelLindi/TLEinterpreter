@@ -1,20 +1,18 @@
 #ifndef TLE_H
 #define TLE_H
 
-
 // Standartbibliotheken
 #include <iostream> // Konsolenausgabe ( hier mit printf() )
 #include <ctype.h> // Prüfungen von Charactern
 #include <cstring> // Länge von char-Arrays
 
 // eigener Code
-#include "cdefines.h"
-//#include "process.h"
-
+#include "cdefines.h" // Spaltennummern (TLE Definition)
 
 class Tle
 {
-    private:
+    //private: // Private ist Standartzugriffslevel bei Klassen!
+    
     // Variablen
     char satelliteName[25] = { '\0' }; ///< name of the satellite
     int satelliteNr; ///< satellite catalog nr

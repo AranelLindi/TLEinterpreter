@@ -1,6 +1,7 @@
-#include "TLE.h"
+#include "process.h" // für getSubString()
+#include "TLE.h" // HEADER
 
-extern bool SONATE_only; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll
+extern bool SONATE_only; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll, für regulären Betrieb nicht beachten
 
 // Überladungen der in der Headerdatei (TLE.h) definierten Funktionen
 
@@ -124,7 +125,7 @@ void Tle::print(void) // Ausgabe gesamtes TLE
     }
     std::cout << std::endl;
     // ##
-    std::cout << "satelliteNr\t:\t" << this->satelliteNr << std::endl;
+    std::cout << "satelliteNr\t:\t" << this->satelliteNr << '\n';
     // ##
     std::cout << "intDesignator\t:\t";
     counter = 9;
@@ -134,29 +135,29 @@ void Tle::print(void) // Ausgabe gesamtes TLE
     }
     std::cout << std::endl;
     // ##
-    std::cout << "year\t\t:\t" << this->year << std::endl;
+    std::cout << "year\t\t:\t" << this->year << '\n';
     // ##
-    std::cout << "dayFraction\t:\t" << this->dayFraction << std::endl;
+    std::cout << "dayFraction\t:\t" << this->dayFraction << '\n';
     // ##
-    std::cout << "bStar\t\t:\t" << this->bStar << std::endl;
-    // ##
-    std::cout << std::endl;
-    // ##
-    std::cout << "inclination\t:\t" << this->inclination << " [rad]" << std::endl;
-    // ##
-    std::cout << "raan\t\t:\t" << this->raan << " [rad]" << std::endl;
-    // ##
-    std::cout << "eccentricity\t:\t" << this->eccentricity << std::endl;
-    // ##
-    std::cout << "meanAnomaly\t:\t" << this->meanAnomaly << " [rad]" << std::endl;
-    // ##
-    std::cout << "meanMotion\t:\t" << this->meanMotion << " [rad/min]" << std::endl;
+    std::cout << "bStar\t\t:\t" << this->bStar << '\n';
     // ##
     std::cout << std::endl;
     // ##
-    std::cout << "valid\t\t:\t" << ((this->valid == true) ? "true" : "false") << std::endl;
+    std::cout << "inclination\t:\t" << this->inclination << " [rad]" << '\n';
+    // ##
+    std::cout << "raan\t\t:\t" << this->raan << " [rad]" << '\n';
+    // ##
+    std::cout << "eccentricity\t:\t" << this->eccentricity << '\n';
+    // ##
+    std::cout << "meanAnomaly\t:\t" << this->meanAnomaly << " [rad]" << '\n';
+    // ##
+    std::cout << "meanMotion\t:\t" << this->meanMotion << " [rad/min]" << '\n';
+    // ##
+    std::cout << std::endl;
+    // ##
+    std::cout << "valid\t\t:\t" << ((this->valid == true) ? "true" : "false") << '\n';
     // ## ENDE ###
-    std::cout << std::endl;
+    std::cout << '\n';
 
     if(SONATE_only)
     {
@@ -167,11 +168,11 @@ void Tle::print(void) // Ausgabe gesamtes TLE
         double _a = a( this->meanMotion );
         double _ny = ny( this->eccentricity, this->meanAnomaly );
 
-        std::cout << "Zusätzliche Bahnelemente:" << std::endl << std::endl;
-        std::cout << "Große Halbachse\t:\t" << (_a / 1000) << " [km]" << std::endl; // Division durch 1000 erzeugt Wert in km
-        std::cout << "Wahre Anomalie\t:\t" << _ny << " [rad]" << std::endl;
+        std::cout << "Zusätzliche Bahnelemente:" << "\n\n";
+        std::cout << "Große Halbachse\t:\t" << (_a / 1000) << " [km]" << '\n'; // Division durch 1000 erzeugt Wert in km
+        std::cout << "Wahre Anomalie\t:\t" << _ny << " [rad]" << '\n';
     }
 
     // Schönheitsabstand zu nächstem Datensatz:
-    std::cout << std::endl << std::endl;
+    std::cout << "\n\n" << std::flush; // erst zum Ende flushen, kostet sonst viel Leistung
 }

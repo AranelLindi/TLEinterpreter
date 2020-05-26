@@ -1,6 +1,13 @@
 #ifndef CDEFINES_H
 #define CDEFINES_H
 
+
+// --LINE 0
+
+#define Satellite_Name 1
+#define Satellite_Name_End 24
+
+
 // --LINE 1
 
 #define Line_Number 1
