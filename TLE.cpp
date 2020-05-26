@@ -5,6 +5,8 @@ extern bool SONATE_only; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenomme
 
 // Überladungen der in der Headerdatei (TLE.h) definierten Funktionen
 
+Tle::Tle() {} // Hier fehlt eventuell noch etwas!
+
 Tle::Tle(char* line0, char* line1, char* line2) // Konstruktor
 {
     // Variablen initialisieren (Arrays ausgenommen, (wurden schon))
