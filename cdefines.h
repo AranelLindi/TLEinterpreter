@@ -1,12 +1,10 @@
 #ifndef CDEFINES_H
 #define CDEFINES_H
 
-
 // --LINE 0
 
 #define Satellite_Name 1
 #define Satellite_Name_End 24
-
 
 // --LINE 1
 
@@ -52,7 +50,6 @@
 #define Checksum 69
 #define Checksum_End 69
 
-
 // --LINE 2
 // ## Line Number identisch zu Line 1!
 
@@ -81,9 +78,7 @@
 
 // ## Checksum identisch zu Line 1!
 
-
 // Aufgabe 1.2 (Sonstiges)
 #define SONATE_NUMBER 44400
-
 
 #endif // CDEFINES_H

@@ -1,5 +1,5 @@
 #include "process.h" // für getSubString()
-#include "TLE.h" // HEADER
+#include "TLE.h"     // HEADER
 
 extern bool SONATE_only; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll, für regulären Betrieb nicht beachten
 
@@ -7,7 +7,7 @@ extern bool SONATE_only; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenomme
 
 Tle::Tle() {} // Hier fehlt eventuell noch etwas!
 
-Tle::Tle(char* line0, char* line1, char* line2) // Konstruktor
+Tle::Tle(char *line0, char *line1, char *line2) // Konstruktor
 {
     // Variablen initialisieren (Arrays ausgenommen, (wurden schon))
     satelliteNr = 0;
@@ -25,7 +25,7 @@ Tle::Tle(char* line0, char* line1, char* line2) // Konstruktor
     this->populateTle(line0, line1, line2);
 }
 
-void Tle::populateTle(char* line0, char* line1, char* line2) // wird von Konstruktor aufgerufen
+void Tle::populateTle(char *line0, char *line1, char *line2) // wird von Konstruktor aufgerufen
 {
     // Daten aus Zeilen extrahieren und in entsprechenden Variablen speichern:
 
@@ -36,7 +36,7 @@ void Tle::populateTle(char* line0, char* line1, char* line2) // wird von Konstru
     // Satelliten-Nummer:
     this->satelliteNr = getInteger(line1, Satellite_Number, Satellite_Number_End);
     // International Designator: (mehrere Informationen gebündelt!)
-    char* intDesignator_ptr = getSubString(line1, International_Designator_Year, International_Designator_PieceOfLaunch_End);
+    char *intDesignator_ptr = getSubString(line1, International_Designator_Year, International_Designator_PieceOfLaunch_End);
     stringcopy(intDesignator_ptr, this->intDesignator);
     // year
     this->year = checkyear(getInteger(line1, Epoch_Year, Epoch_Year_End));
@@ -59,7 +59,7 @@ void Tle::populateTle(char* line0, char* line1, char* line2) // wird von Konstru
     this->meanMotion = getconversion(getDouble(line2, Mean_Motion, Mean_Motion_End, false));
 
     // Prüfen ob eine Zeile ungültig ist (Aussagenlogik: !A || !B == !(A && B) )
-    if ( ! (isTleLineValid(line1) && isTleLineValid(line2)))
+    if (!(isTleLineValid(line1) && isTleLineValid(line2)))
     {
         this->valid = false;
     }
@@ -84,22 +84,23 @@ double Tle::getArgumentOfPerigee() { return this->argumentOfPerigee; }
 double Tle::getMeanAnomaly() { return this->meanAnomaly; }
 double Tle::getMeanMotion() { return this->meanMotion; }
 
-bool Tle::isTleLineValid(const char* line) // prüft für Zeile Gültigkeit
+bool Tle::isTleLineValid(const char *line) // prüft für Zeile Gültigkeit
 {
     // Prüfen ob die Zeilen länge genau 69 Zeichen lang ist:
     //if (strlen(line) != 69) return false;
-
 
     int sum = 0; // summiert alles auf (Feldwerte)
 
     // Fallunterscheidung: Ziffern addieren, Minuszeichen mit '1' bewerten, restliche Zeichen ignorieren
     // Ergebnis modulo 10 nehmen und mit Checksum der Zeile vergleichen (69). Bool zurückgeben.
-    for(int i = 0; i < 68; i++)
+    for (int i = 0; i < 68; i++)
     {
         char chr = line[i]; // aktuelles Zeichen
 
-        if (chr == ' ' || chr == '+' || chr == '.' || std::isalpha(chr)) continue; // isalpha() : bool IstBuchstabe()
-        else if (chr == '-') sum++; // + 1
+        if (chr == ' ' || chr == '+' || chr == '.' || std::isalpha(chr))
+            continue; // isalpha() : bool IstBuchstabe()
+        else if (chr == '-')
+            sum++; // + 1
         else
         {
             int number = (int)(chr - '0'); // std::atoi() ist Schrott und hat hier Fehler verursacht! Besser so *char in int konvertieren!
@@ -108,7 +109,7 @@ bool Tle::isTleLineValid(const char* line) // prüft für Zeile Gültigkeit
     }
 
     sum %= 10; // modulo 10
-    
+
     // rechnet Character auf Position 68 mit - '0' in eine Zahl um:
     return (line[68] - '0') == sum;
 }
@@ -118,14 +119,16 @@ void Tle::print(void) // Ausgabe gesamtes TLE
     std::cout.precision(15); // Ändert die Anzahl der ausgegebenen Nachkommastellen.
 
     // Info: Zeilenumbruch für nächstes Element wird stets im vorherigen Schritt durchgeführt
-    int counter;
+
+    int counter; // Temporärer Counter für mehrere Zwischenoperationen
+    // ##
     std::cout << "satelliteName\t:\t";
     counter = 25;
     while (counter--)
     {
         std::cout << this->satelliteName[24 - counter];
     }
-    std::cout << std::endl;
+    std::cout << '\n';
     // ##
     std::cout << "satelliteNr\t:\t" << this->satelliteNr << '\n';
     // ##
@@ -135,7 +138,7 @@ void Tle::print(void) // Ausgabe gesamtes TLE
     {
         std::cout << this->intDesignator[8 - counter];
     }
-    std::cout << std::endl;
+    std::cout << '\n';
     // ##
     std::cout << "year\t\t:\t" << this->year << '\n';
     // ##
@@ -143,7 +146,7 @@ void Tle::print(void) // Ausgabe gesamtes TLE
     // ##
     std::cout << "bStar\t\t:\t" << this->bStar << '\n';
     // ##
-    std::cout << std::endl;
+    std::cout << '\n';
     // ##
     std::cout << "inclination\t:\t" << this->inclination << " [rad]" << '\n';
     // ##
@@ -155,26 +158,28 @@ void Tle::print(void) // Ausgabe gesamtes TLE
     // ##
     std::cout << "meanMotion\t:\t" << this->meanMotion << " [rad/min]" << '\n';
     // ##
-    std::cout << std::endl;
+    std::cout << '\n';
     // ##
     std::cout << "valid\t\t:\t" << ((this->valid == true) ? "true" : "false") << '\n';
     // ## ENDE ###
     std::cout << '\n';
 
-    if(SONATE_only)
+    if (SONATE_only)
     {
         // weitere Ausgabe: (siehe Aufgabe Übungsblatt)
         // - Große Halbachse a
         // - Wahre Anomalie
 
-        double _a = a( this->meanMotion );
-        double _ny = ny( this->eccentricity, this->meanAnomaly );
+        double _a = a(this->meanMotion);
+        double _ny = ny(this->eccentricity, this->meanAnomaly);
 
-        std::cout << "Zusätzliche Bahnelemente:" << "\n\n";
+        std::cout << "Zusätzliche Bahnelemente:"
+                  << "\n\n";
         std::cout << "Große Halbachse\t:\t" << (_a / 1000) << " [km]" << '\n'; // Division durch 1000 erzeugt Wert in km
         std::cout << "Wahre Anomalie\t:\t" << _ny << " [rad]" << '\n';
     }
 
     // Schönheitsabstand zu nächstem Datensatz:
-    std::cout << "\n\n" << std::flush; // erst zum Ende flushen, kostet sonst viel Leistung
+    std::cout << "\n\n"
+              << std::flush; // erst zum Ende flushen, kostet sonst viel Leistung
 }
