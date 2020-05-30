@@ -209,7 +209,7 @@ void stringcopy(char *source, char *dest) // einfache Funktion um char-Array zu 
         ;
 }
 
-double a(double f) // Berechnet über die mittlere Bewegungszeit und der Konstanten GM die große Halbachse a in Metern
+double get_a(double f) // Berechnet über die mittlere Bewegungszeit und der Konstanten GM die große Halbachse a in Metern
 {
     if (f == 0)
         return 0; // Fall T = 0 abdecken (durch Null teilen!)
