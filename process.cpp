@@ -3,7 +3,7 @@
 
 // GLOBALE VARIABLEN
 // Ist absichltich hier deklariert und im Header mit extern definiert! (Standartvorgehensweise)
-bool SONATE_only = false; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll. Für regulären Betrieb nicht beachten.
+bool SONATE_only = true; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll. Für regulären Betrieb nicht beachten.
 
 std::map<int, Tle> readTlesFromFile(const char *fileName)
 {
@@ -214,9 +214,10 @@ double a(double f) // Berechnet über die mittlere Bewegungszeit und der Konstan
     if (f == 0)
         return 0; // Fall T = 0 abdecken (durch Null teilen!)
 
-    double seconds = 1 / f * 86400; // Enthält Anzahl Sekunden pro Umlauf (T)
+    double T_in_s = 2 * M_PI * 60 * (1 / f); // Enthält Anzahl Sekunden pro Umlauf (T)
 
-    return cbrt(GM * pow(seconds, 2) * 1 / (4 * pow(M_PI, 2))); // (cbrt ist die kubische Wurzel)
+    return ( cbrt( 0.25 * GM * ( powf( T_in_s / M_PI, 2 ) ) ) );
+    //return cbrt(GM * pow(T_in_s, 2) * 1 / (4 * pow(M_PI, 2))); // (cbrt ist die kubische Wurzel)
 }
 
 double ny(double e, double M) // Berechnet mittels Newton-Verfahren und numerische Exzentrizität sowie mittlerer Anomalie die wahre Anomalie (Newton-Verfahren)
@@ -224,34 +225,47 @@ double ny(double e, double M) // Berechnet mittels Newton-Verfahren und numerisc
     // Kepler-Gleichung: M = E - e * sin( E )
     // -> wird umgestellt zu: 0 = E - e * sin( E ) - M
 
-    double x0 = M;
+    double x0 = M; // Startwert
 
     // Lambda-Funktionen: Stellen die Keplergleichung sowie ihre Ableitung dar
-    auto F = [e, M](double x) -> double { return (1.0 * x - 1.0 * e * sin(x) - 1.0 * M); };
-    auto f = [e](double x) -> double { return (1.0 - 1.0 * e * cos(x)); };
+    const auto F = [e, M](double x) -> double { return (x - e * sin(x) - M); };
+    const auto f = [e](double x) -> double { return (1 - e * cos(x)); };
 
-    do // Newton Verfahren
-    {
-        if (f(x0) == 0)
+    // Newton Verfahren
+    for(uint8_t i = 0; i < 10; i++) {
+        if (f(x0) == 0) {
             break; // Division durch Null abfangen
+        }
 
-        x0 = x0 - (F(x0) / f(x0)); // Newton-Verfahren
-    } while (std::fabs(F(x0)) > pow(10, -15));
+        x0 = x0 - ( F(x0) / f(x0) ); // Newton-Verfahren
+    }// while (counter < 5);//std::fabs(F(x0)) > 1e-10);
 
     // exzentrische Anomalie in wahre Anomalie umrechnen:
-    double trueAnomalie = 2 * atan(tan(x0 / 2) * sqrt(((1 + e) / (1 - e))));
+    double trueAnomaly = 2 * atan2( ( tan(x0 / 2) * sqrt((1 + e) / (1 - e)) ), 1 );
 
-    return trueAnomalie;
+    // True Anomaly
+
+    return (trueAnomaly < 0 ? trueAnomaly + (2 * M_PI) : trueAnomaly);
 }
 
-double getconversion(double value) // Wandelt Zahl von [rev/day] in [rad/min] um
+double convertRevPerDayInRadPerMin(double value) // Wandelt Zahl von [rev/day] in [rad/min] um
 {
     return (value * (2 * M_PI) / (60 * 24));
 }
 
-double getrad(double angle) // Wandelt Winkel in [rad] um
+double convertRadPerMinInRevPerDay(double value) // Wandelt Zahl von [rad/min] in [rev/day] um
+{
+    return (value * (60 * 24) / 2 * M_PI);
+}
+
+double convertDegreeInRadian(double angle) // Wandelt [degree] in [rad] um
 {
     return (angle * M_PI / 180.0);
+}
+
+double convertInDegree(double rad) // Wandelt [rad] in [degree] um
+{
+    return (rad * 180.0 / M_PI);
 }
 
 int checkyear(unsigned int value)

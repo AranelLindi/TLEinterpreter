@@ -15,7 +15,7 @@
 extern bool SONATE_ONLY;
 
 // Konstanten (für Aufgabe 1.2)
-const double GM = 3.986005e14; // Gravitationskonstante * Masse d. Erde
+const float GM = 3.985892856e14; // Gravitationskonstante * Masse d. Erde
 
 // Funktionenrümpfe
 std::map<int, Tle> readTlesFromFile(const char *filename); // Aufgabenstellung
@@ -28,16 +28,20 @@ char *convertConstCharPtrToCharPtr(std::string sstring); // string.c_string (con
 
 void stringcopy(char *source, char *dest); // kopiert ein char-Array in ein anderes
 
-double getconversion(double value); // Wandelt Einheit [rev/day] in [rad/min] um
+double convertRevPerDayInRadPerMin(double value); // Wandelt Einheit [rev/day] in [rad/min] um
 
-double getrad(double angle); // Wandelt Winkel in [rad] um
+double convertRadPerMinInRevPerDay(double value); // Wandelt Einheit [rad/min] in [rev/day] um
+
+double convertDegreeInRadian(double angle); // Wandelt Winkel in [rad] um
+
+double convertInDegree(double rad); // Wandelt Rad in Winkel um
 
 int checkyear(unsigned int value);
 
 // ################################
 // zu Aufgabe 1.2:
-double a(double T);            // Berechnet große Halbachse
-double ny(double e, double M); // Berechnet Wahre Anomalie
+double get_a(double T);            // Berechnet große Halbachse
+double getTrueAnomaly(double e, double M); // Berechnet Wahre Anomalie
 // ################################
 
 #endif /// PROCESSING_H

@@ -46,17 +46,17 @@ void Tle::populateTle(char *line0, char *line1, char *line2) // wird von Konstru
     this->bStar = getDouble(line1, BSTAR, BSTAR_End, true);
     // # LINE 2
     // Inklination
-    this->inclination = getDouble(line2, Inclination, Inclination_End, false);
+    this->inclination = convertDegreeInRadian(getDouble(line2, Inclination, Inclination_End, false));
     // raan
-    this->raan = getDouble(line2, Right_Ascension_Of_Ascending_Node, Right_Ascension_Of_Ascending_Node_End, false);
+    this->raan = convertDegreeInRadian(getDouble(line2, Right_Ascension_Of_Ascending_Node, Right_Ascension_Of_Ascending_Node_End, false));
     // eccentricity
     this->eccentricity = getDouble(line2, Eccentricity, Eccentricity_End, true);
     // argumentOfPerigee
-    this->argumentOfPerigee = getDouble(line2, Argument_Of_Perigee, Argument_Of_Perigee_End, false);
+    this->argumentOfPerigee = convertDegreeInRadian(getDouble(line2, Argument_Of_Perigee, Argument_Of_Perigee_End, false));
     // meanAnomaly
-    this->meanAnomaly = getDouble(line2, Mean_Anomaly, Mean_Anomaly_End, false);
+    this->meanAnomaly = convertDegreeInRadian(getDouble(line2, Mean_Anomaly, Mean_Anomaly_End, false));
     // meanMotion
-    this->meanMotion = getconversion(getDouble(line2, Mean_Motion, Mean_Motion_End, false));
+    this->meanMotion = convertRevPerDayInRadPerMin(getDouble(line2, Mean_Motion, Mean_Motion_End, false));
 
     // Prüfen ob eine Zeile ungültig ist (Aussagenlogik: !A || !B == !(A && B) )
     if (!(isTleLineValid(line1) && isTleLineValid(line2)))
@@ -69,7 +69,7 @@ void Tle::populateTle(char *line0, char *line1, char *line2) // wird von Konstru
     }
 }
 
-// Getter
+// GETTER
 std::string Tle::getSatelliteName() { return std::string(this->satelliteName); }
 int Tle::getSatelliteNr() { return this->satelliteNr; }
 std::string Tle::getintDesignator() { return std::string(this->intDesignator); }
@@ -77,6 +77,7 @@ int Tle::getYear() { return this->year; }
 double Tle::getDayFraction() { return this->dayFraction; }
 double Tle::getBstar() { return this->bStar; }
 
+// Rückgabe erfolgt stets in [rad] bzw. [rad/min]! (siehe 'Einlesen'!)
 double Tle::getInclination() { return this->inclination; }
 double Tle::getRaan() { return this->raan; }
 double Tle::getEccentricity() { return this->eccentricity; }
@@ -116,7 +117,7 @@ bool Tle::isTleLineValid(const char *line) // prüft für Zeile Gültigkeit
 
 void Tle::print(void) // Ausgabe gesamtes TLE
 {
-    std::cout.precision(15); // Ändert die Anzahl der ausgegebenen Nachkommastellen.
+    std::cout.precision(8); // Ändert die Anzahl der ausgegebenen Nachkommastellen.
 
     // Info: Zeilenumbruch für nächstes Element wird stets im vorherigen Schritt durchgeführt
 
@@ -147,16 +148,19 @@ void Tle::print(void) // Ausgabe gesamtes TLE
     std::cout << "Bstar\t\t:\t" << this->bStar << '\n';
     // ##
     std::cout << '\n';
+    std::cout << std::fixed; // ab hier werden Zahlen bündig dargestellt
     // ##
-    std::cout << "inclination\t:\t" << this->inclination << " [rad]" << '\n';
+    std::cout << "inclination\t:\t" << this->inclination << " [rad]" << '\t' << convertInDegree(this->inclination) << " [deg]" << '\n';
     // ##
-    std::cout << "raan\t\t:\t" << this->raan << " [rad]" << '\n';
+    std::cout << "raan\t\t:\t" << this->raan << " [rad]" << '\t' << convertInDegree(this->raan) << " [deg]" << '\n';
     // ##
     std::cout << "eccentricity\t:\t" << this->eccentricity << '\n';
     // ##
-    std::cout << "meanAnomaly\t:\t" << this->meanAnomaly << " [rad]" << '\n';
+    std::cout << "argOfPerigee\t:\t" << this->argumentOfPerigee << " [rad]" << '\t' << convertInDegree(this->argumentOfPerigee) << " [deg]" << '\n';
     // ##
-    std::cout << "meanMotion\t:\t" << this->meanMotion << " [rad/min]" << '\n';
+    std::cout << "meanAnomaly\t:\t" << this->meanAnomaly << " [rad]" << '\t' << convertInDegree(this->meanAnomaly) << " [deg]" << '\n';
+    // ##
+    std::cout << "meanMotion\t:\t" << this->meanMotion << " [rad/min]" << '\t' << convertInDegree(this->meanMotion) << " [deg/min]" << '\n';
     // ##
     std::cout << '\n';
     // ##
@@ -170,12 +174,12 @@ void Tle::print(void) // Ausgabe gesamtes TLE
         // - Große Halbachse a
         // - Wahre Anomalie
 
-        double _a = a(this->meanMotion);
-        double _ny = ny(this->eccentricity, this->meanAnomaly);
+        double _a = get_a(this->getMeanMotion()) / 1000; // Einheit: [km]
+        double _ny = getTrueAnomaly(this->getEccentricity(), this->getMeanAnomaly());
 
         std::cout << "Zusätzliche Bahnelemente:"
                   << "\n\n";
-        std::cout << "Große Halbachse\t:\t" << (_a / 1000) << " [km]" << '\n'; // Division durch 1000 erzeugt Wert in km
+        std::cout << "Große Halbachse\t:\t" << _a << " [km]" << '\n';
         std::cout << "Wahre Anomalie\t:\t" << _ny << " [rad]" << '\n';
     }
 
