@@ -2,12 +2,12 @@
 * TLE Interpreter v. 1.0
 *
 * - Created by Stefan Lindörfer
-*	26. Mai 2020 21:45
+*	30. Mai 2020 20:24
 *
 */
 
 
-// Diesen Header eventuell umbennen und includen um TLE Interpreter in neues Projekt einzubinden.
+// Um TLEInterpreter zu verwenden, diesen Header includen!
 
 #ifndef TLEINTERPRETER_H
 #define TLEINTERPRETER_H
@@ -17,6 +17,6 @@
 #include "process.h"
 
 // Global Variables
-extern bool SONATE_only; // Was only needed for an exercise
+extern bool SONATE_only; // Was only needed for a sub-task.
 
 #endif // tleinterpreter.h

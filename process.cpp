@@ -3,7 +3,7 @@
 
 // GLOBALE VARIABLEN
 // Ist absichltich hier deklariert und im Header mit extern definiert! (Standartvorgehensweise)
-bool SONATE_only = true; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll. Für regulären Betrieb nicht beachten.
+bool SONATE_only = false; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll. Für regulären Betrieb nicht beachten.
 
 std::map<int, Tle> readTlesFromFile(const char *fileName)
 {
@@ -220,7 +220,7 @@ double a(double f) // Berechnet über die mittlere Bewegungszeit und der Konstan
     //return cbrt(GM * pow(T_in_s, 2) * 1 / (4 * pow(M_PI, 2))); // (cbrt ist die kubische Wurzel)
 }
 
-double ny(double e, double M) // Berechnet mittels Newton-Verfahren und numerische Exzentrizität sowie mittlerer Anomalie die wahre Anomalie (Newton-Verfahren)
+double getTrueAnomaly(double e, double M) // Berechnet mittels Newton-Verfahren und numerische Exzentrizität sowie mittlerer Anomalie die wahre Anomalie (Newton-Verfahren)
 {
     // Kepler-Gleichung: M = E - e * sin( E )
     // -> wird umgestellt zu: 0 = E - e * sin( E ) - M
