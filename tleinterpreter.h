@@ -9,8 +9,8 @@
 
 // Diesen Header eventuell umbennen und includen um TLE Interpreter in neues Projekt einzubinden.
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef TLEINTERPRETER_H
+#define TLEINTERPRETER_H
 
 // Relevant Header-Files
 #include "TLE.h"
@@ -19,4 +19,4 @@
 // Global Variables
 extern bool SONATE_only; // Was only needed for an exercise
 
-#endif // main.h
+#endif // tleinterpreter.h

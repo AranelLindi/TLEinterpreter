@@ -144,7 +144,7 @@ void Tle::print(void) // Ausgabe gesamtes TLE
     // ##
     std::cout << "dayFraction\t:\t" << this->dayFraction << '\n';
     // ##
-    std::cout << "bStar\t\t:\t" << this->bStar << '\n';
+    std::cout << "Bstar\t\t:\t" << this->bStar << '\n';
     // ##
     std::cout << '\n';
     // ##
