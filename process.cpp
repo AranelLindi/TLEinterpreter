@@ -3,7 +3,7 @@
 
 // GLOBALE VARIABLEN
 // Ist absichltich hier deklariert und im Header mit extern definiert! (Standartvorgehensweise)
-bool SONATE_only = false; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll. Für regulären Betrieb nicht beachten.
+const bool SONATE_ONLY = false; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll. Für regulären Betrieb nicht beachten.
 
 std::map<int, Tle> readTlesFromFile(const char *fileName)
 {
@@ -209,14 +209,14 @@ void stringcopy(char *source, char *dest) // einfache Funktion um char-Array zu 
         ;
 }
 
-double get_a(double f) // Berechnet über die mittlere Bewegungszeit und der Konstanten GM die große Halbachse a in Metern
+double get_a(double f) // Berechnet über die mittlere Bewegungszeit und der Konstanten GM die große Halbachse a in Kilometern [km] !
 {
     if (f == 0)
         return 0; // Fall T = 0 abdecken (durch Null teilen!)
 
     double T_in_s = 2 * M_PI * 60 * (1 / f); // Enthält Anzahl Sekunden pro Umlauf (T)
 
-    return ( cbrt( 0.25 * GM * ( powf( T_in_s / M_PI, 2 ) ) ) );
+    return ( cbrt( 0.25 * GM * ( powf( T_in_s / M_PI, 2 ) ) ) ) / 1000; // Berechnung in km!
     //return cbrt(GM * pow(T_in_s, 2) * 1 / (4 * pow(M_PI, 2))); // (cbrt ist die kubische Wurzel)
 }
 

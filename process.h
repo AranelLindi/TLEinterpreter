@@ -12,7 +12,7 @@
 #include "cdefines.h" // Spaltendefinitionen TLE
 #include "TLE.h"      // für Objekt Tle
 
-extern bool SONATE_ONLY;
+extern const bool SONATE_ONLY;
 
 // Konstanten (für Aufgabe 1.2)
 const float GM = 3.985892856e14; // Gravitationskonstante * Masse d. Erde
@@ -40,8 +40,10 @@ int checkyear(unsigned int value);
 
 // ################################
 // zu Aufgabe 1.2:
-double get_a(double T);            // Berechnet große Halbachse
+
+double get_a(double T);            // Berechnet große Halbachse in [km]
 double getTrueAnomaly(double e, double M); // Berechnet Wahre Anomalie
+
 // ################################
 
 #endif /// PROCESSING_H
