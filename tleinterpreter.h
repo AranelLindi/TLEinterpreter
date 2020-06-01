@@ -17,6 +17,6 @@
 #include "process.h"
 
 // Global Variables
-extern bool SONATE_only; // Was only needed for a sub-task.
+extern const bool SONATE_ONLY; // Was only needed for a sub-task.
 
 #endif // tleinterpreter.h

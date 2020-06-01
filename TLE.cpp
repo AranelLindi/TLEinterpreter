@@ -1,7 +1,7 @@
 #include "process.h" // für getSubString()
 #include "TLE.h"     // HEADER
 
-extern bool SONATE_only; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll, für regulären Betrieb nicht beachten
+extern const bool SONATE_ONLY; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll, für regulären Betrieb nicht beachten
 
 // Überladungen der in der Headerdatei (TLE.h) definierten Funktionen
 
@@ -168,13 +168,13 @@ void Tle::print(void) // Ausgabe gesamtes TLE
     // ## ENDE ###
     std::cout << '\n';
 
-    if (SONATE_only)
+    if (SONATE_ONLY)
     {
         // weitere Ausgabe: (siehe Aufgabe Übungsblatt)
         // - Große Halbachse a
         // - Wahre Anomalie
 
-        double _a = get_a(this->getMeanMotion()) / 1000; // Einheit: [km]
+        double _a = get_a(this->getMeanMotion()); // Einheit: [km]
         double _ny = getTrueAnomaly(this->getEccentricity(), this->getMeanAnomaly());
 
         std::cout << "Zusätzliche Bahnelemente:"
