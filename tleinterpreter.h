@@ -6,7 +6,6 @@
 *
 */
 
-
 // Um TLEInterpreter zu verwenden, diesen Header includen!
 
 #ifndef TLEINTERPRETER_H

@@ -41,7 +41,7 @@ int checkyear(unsigned int value);
 // ################################
 // zu Aufgabe 1.2:
 
-double get_a(double T);            // Berechnet große Halbachse in [km]
+double get_a(double T);                    // Berechnet große Halbachse in [km]
 double getTrueAnomaly(double e, double M); // Berechnet Wahre Anomalie
 
 // ################################

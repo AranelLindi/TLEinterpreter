@@ -216,7 +216,7 @@ double get_a(double f) // Berechnet über die mittlere Bewegungszeit und der Kon
 
     double T_in_s = 2 * M_PI * 60 * (1 / f); // Enthält Anzahl Sekunden pro Umlauf (T)
 
-    return ( cbrt( 0.25 * GM * ( powf( T_in_s / M_PI, 2 ) ) ) ) / 1000; // Berechnung in km!
+    return (cbrt(0.25 * GM * (powf(T_in_s / M_PI, 2)))) / 1000; // Berechnung in km!
     //return cbrt(GM * pow(T_in_s, 2) * 1 / (4 * pow(M_PI, 2))); // (cbrt ist die kubische Wurzel)
 }
 
@@ -232,16 +232,18 @@ double getTrueAnomaly(double e, double M) // Berechnet mittels Newton-Verfahren 
     const auto f = [e](double x) -> double { return (1 - e * cos(x)); };
 
     // Newton Verfahren
-    for(uint8_t i = 0; i < 10; i++) {
-        if (f(x0) == 0) {
+    for (uint8_t i = 0; i < 10; i++)
+    {
+        if (f(x0) == 0)
+        {
             break; // Division durch Null abfangen
         }
 
-        x0 = x0 - ( F(x0) / f(x0) ); // Newton-Verfahren
-    }// while (counter < 5);//std::fabs(F(x0)) > 1e-10);
+        x0 = x0 - (F(x0) / f(x0)); // Newton-Verfahren
+    }                              // while (counter < 5);//std::fabs(F(x0)) > 1e-10);
 
     // exzentrische Anomalie in wahre Anomalie umrechnen:
-    double trueAnomaly = 2 * atan2( ( tan(x0 / 2) * sqrt((1 + e) / (1 - e)) ), 1 );
+    double trueAnomaly = 2 * atan2((tan(x0 / 2) * sqrt((1 + e) / (1 - e))), 1);
 
     // True Anomaly
 

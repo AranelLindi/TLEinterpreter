@@ -1,12 +1,12 @@
 // Standartbibliothek (können in der .cpp Datei bleiben, da sie nicht für den generellen
-// Betrieb des TLEInterpreter benötigt werden, sondern nur für die Ausgabe. Daher von üblicher 
+// Betrieb des TLEInterpreter benötigt werden, sondern nur für die Ausgabe. Daher von üblicher
 // Praxis absehen)
 #include <iostream> // für Konsolen Ein- & Ausgabe
 #include <filesystem>
 
 #include "tleinterpreter.h" // HEADER
 
-extern const bool SONATE_ONLY; // 
+extern const bool SONATE_ONLY; //
 
 int main(void)
 {
