@@ -1,5 +1,5 @@
 // eigener Code
-#include "process.h" // HEADER
+#include "reader.h" // HEADER
 
 // GLOBALE VARIABLEN
 // Ist absichltich hier deklariert und im Header mit extern definiert! (Standartvorgehensweise)
@@ -257,7 +257,7 @@ double convertRevPerDayInRadPerMin(double value) // Wandelt Zahl von [rev/day] i
 
 double convertRadPerMinInRevPerDay(double value) // Wandelt Zahl von [rad/min] in [rev/day] um
 {
-    return (value * (60 * 24) / 2 * M_PI);
+    return (value * (60 * 24) / (2 * M_PI));
 }
 
 double convertDegreeInRadian(double angle) // Wandelt [degree] in [rad] um

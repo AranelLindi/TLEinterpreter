@@ -1,5 +1,5 @@
 executable:
-		g++ -o executable main.cpp TLE.cpp process.cpp -std=c++17
+		g++ -o executable main.cpp tle/TLE.cpp reader/reader.cpp -std=c++17
 #library:
 #		g++ -o tle_lib TLE.cpp process.cpp -std=c++17
 

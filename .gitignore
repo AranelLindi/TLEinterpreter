@@ -4,3 +4,6 @@
 
 # All Textfiles
 *.txt
+
+# executable
+executable

@@ -1,4 +1,4 @@
-#include "process.h" // für getSubString()
+#include "../reader/reader.h" // für getSubString()
 #include "TLE.h"     // HEADER
 
 extern const bool SONATE_ONLY; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll, für regulären Betrieb nicht beachten

@@ -12,8 +12,8 @@
 #define TLEINTERPRETER_H
 
 // Relevant Header-Files
-#include "TLE.h"
-#include "process.h"
+#include "tle/TLE.h"
+#include "reader/reader.h"
 
 // Global Variables
 extern const bool SONATE_ONLY; // Was only needed for a sub-task.

@@ -9,8 +9,8 @@
 #include <map>       // für map<> Objekt
 
 // eigener Code
-#include "cdefines.h" // Spaltendefinitionen TLE
-#include "TLE.h"      // für Objekt Tle
+#include "../tle/cdefines.h" // Spaltendefinitionen TLE
+#include "../tle/TLE.h"      // für Objekt Tle
 
 extern const bool SONATE_ONLY;
 
