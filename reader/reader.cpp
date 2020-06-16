@@ -250,22 +250,22 @@ double getTrueAnomaly(double e, double M) // Berechnet mittels Newton-Verfahren 
     return (trueAnomaly < 0 ? trueAnomaly + (2 * M_PI) : trueAnomaly);
 }
 
-double convertRevPerDayInRadPerMin(double value) // Wandelt Zahl von [rev/day] in [rad/min] um
+double revPerDay2RadPerMin(double value) // Wandelt Zahl von [rev/day] in [rad/min] um
 {
     return (value * (2 * M_PI) / (60 * 24));
 }
 
-double convertRadPerMinInRevPerDay(double value) // Wandelt Zahl von [rad/min] in [rev/day] um
+double radPerMin2RevPerDay(double value) // Wandelt Zahl von [rad/min] in [rev/day] um
 {
     return (value * (60 * 24) / (2 * M_PI));
 }
 
-double convertDegreeInRadian(double angle) // Wandelt [degree] in [rad] um
+double deg2rad(double angle) // Wandelt [degree] in [rad] um
 {
     return (angle * M_PI / 180.0);
 }
 
-double convertInDegree(double rad) // Wandelt [rad] in [degree] um
+double rad2deg(double rad) // Wandelt [rad] in [degree] um
 {
     return (rad * 180.0 / M_PI);
 }

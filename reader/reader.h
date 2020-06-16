@@ -28,13 +28,13 @@ char *convertConstCharPtrToCharPtr(std::string sstring); // string.c_string (con
 
 void stringcopy(char *source, char *dest); // kopiert ein char-Array in ein anderes
 
-double convertRevPerDayInRadPerMin(double value); // Wandelt Einheit [rev/day] in [rad/min] um
+double revPerDay2RadPerMin(double value); // Wandelt Einheit [rev/day] in [rad/min] um
 
-double convertRadPerMinInRevPerDay(double value); // Wandelt Einheit [rad/min] in [rev/day] um
+double radPerMin2RevPerDay(double value); // Wandelt Einheit [rad/min] in [rev/day] um
 
-double convertDegreeInRadian(double angle); // Wandelt Winkel in [rad] um
+double deg2rad(double angle); // Wandelt Winkel in [rad] um
 
-double convertInDegree(double rad); // Wandelt Rad in Winkel um
+double rad2deg(double rad); // Wandelt Rad in Winkel um
 
 int checkyear(unsigned int value);
 

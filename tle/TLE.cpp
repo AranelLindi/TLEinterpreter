@@ -1,5 +1,5 @@
 #include "../reader/reader.h" // für getSubString()
-#include "TLE.h"     // HEADER
+#include "TLE.h"              // HEADER
 
 extern const bool SONATE_ONLY; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll, für regulären Betrieb nicht beachten
 
@@ -46,17 +46,17 @@ void Tle::populateTle(char *line0, char *line1, char *line2) // wird von Konstru
     this->bStar = getDouble(line1, BSTAR, BSTAR_End, true);
     // # LINE 2
     // Inklination
-    this->inclination = convertDegreeInRadian(getDouble(line2, Inclination, Inclination_End, false));
+    this->inclination = deg2rad(getDouble(line2, Inclination, Inclination_End, false));
     // raan
-    this->raan = convertDegreeInRadian(getDouble(line2, Right_Ascension_Of_Ascending_Node, Right_Ascension_Of_Ascending_Node_End, false));
+    this->raan = deg2rad(getDouble(line2, Right_Ascension_Of_Ascending_Node, Right_Ascension_Of_Ascending_Node_End, false));
     // eccentricity
     this->eccentricity = getDouble(line2, Eccentricity, Eccentricity_End, true);
     // argumentOfPerigee
-    this->argumentOfPerigee = convertDegreeInRadian(getDouble(line2, Argument_Of_Perigee, Argument_Of_Perigee_End, false));
+    this->argumentOfPerigee = deg2rad(getDouble(line2, Argument_Of_Perigee, Argument_Of_Perigee_End, false));
     // meanAnomaly
-    this->meanAnomaly = convertDegreeInRadian(getDouble(line2, Mean_Anomaly, Mean_Anomaly_End, false));
+    this->meanAnomaly = deg2rad(getDouble(line2, Mean_Anomaly, Mean_Anomaly_End, false));
     // meanMotion
-    this->meanMotion = convertRevPerDayInRadPerMin(getDouble(line2, Mean_Motion, Mean_Motion_End, false));
+    this->meanMotion = revPerDay2RadPerMin(getDouble(line2, Mean_Motion, Mean_Motion_End, false));
 
     // Prüfen ob eine Zeile ungültig ist (Aussagenlogik: !A || !B == !(A && B) )
     if (!(isTleLineValid(line1) && isTleLineValid(line2)))
@@ -150,17 +150,17 @@ void Tle::print(void) // Ausgabe gesamtes TLE
     std::cout << '\n';
     std::cout << std::fixed; // ab hier werden Zahlen bündig dargestellt
     // ##
-    std::cout << "inclination\t:\t" << this->inclination << " [rad]" << '\t' << convertInDegree(this->inclination) << " [deg]" << '\n';
+    std::cout << "inclination\t:\t" << this->inclination << " [rad]" << '\t' << rad2deg(this->inclination) << " [deg]" << '\n';
     // ##
-    std::cout << "raan\t\t:\t" << this->raan << " [rad]" << '\t' << convertInDegree(this->raan) << " [deg]" << '\n';
+    std::cout << "raan\t\t:\t" << this->raan << " [rad]" << '\t' << rad2deg(this->raan) << " [deg]" << '\n';
     // ##
     std::cout << "eccentricity\t:\t" << this->eccentricity << '\n';
     // ##
-    std::cout << "argOfPerigee\t:\t" << this->argumentOfPerigee << " [rad]" << '\t' << convertInDegree(this->argumentOfPerigee) << " [deg]" << '\n';
+    std::cout << "argOfPerigee\t:\t" << this->argumentOfPerigee << " [rad]" << '\t' << rad2deg(this->argumentOfPerigee) << " [deg]" << '\n';
     // ##
-    std::cout << "meanAnomaly\t:\t" << this->meanAnomaly << " [rad]" << '\t' << convertInDegree(this->meanAnomaly) << " [deg]" << '\n';
+    std::cout << "meanAnomaly\t:\t" << this->meanAnomaly << " [rad]" << '\t' << rad2deg(this->meanAnomaly) << " [deg]" << '\n';
     // ##
-    std::cout << "meanMotion\t:\t" << this->meanMotion << " [rad/min]" << '\t' << convertInDegree(this->meanMotion) << " [deg/min]" << '\n';
+    std::cout << "meanMotion\t:\t" << this->meanMotion << " [rad/min]" << '\t' << rad2deg(this->meanMotion) << " [deg/min]" << '\n';
     // ##
     std::cout << '\n';
     // ##
