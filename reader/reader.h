@@ -1,5 +1,4 @@
-#ifndef PROCESS_H
-#define PROCESS_H
+#pragma once
 
 // Standartbibliotheken
 #include <fstream>   // um txt-Datei zu lesen
@@ -8,25 +7,26 @@
 #include <algorithm> // für for_each
 #include <map>       // für map<> Objekt
 
+#include <array> // std::array<T>
+#include <memory> // smart pointer
+#include <string> // std::string
+
+#include <cstdint> // uint-types
+
 // eigener Code
 #include "../tle/cdefines.h" // Spaltendefinitionen TLE
 #include "../tle/TLE.h"      // für Objekt Tle
 
-extern const bool SONATE_ONLY;
+extern consteval bool SONATE_ONLY;
 
 // Konstanten (für Aufgabe 1.2)
 const float GM = 3.985892856e14; // Gravitationskonstante * Masse d. Erde
 
 // Funktionenrümpfe
-std::map<int, Tle> readTlesFromFile(const char *filename); // Aufgabenstellung
+std::map<int32_t, Tle> readTlesFromFile(std::string filename); // Aufgabenstellung
 
-char *getSubString(const char *source, int start, int end);                                // Substring aus Zeile
-int getInteger(const char *source, int start, int end);                                    // Integer aus Substring
-double getDouble(const char *source, int start, int end, bool leadingdecimalpointassumed); // Double aus Substring
-
-char *convertConstCharPtrToCharPtr(std::string sstring); // string.c_string (const char*) in char* konvertieren
-
-void stringcopy(char *source, char *dest); // kopiert ein char-Array in ein anderes
+int getInteger(const std::string& source, int32_t start, int32_t end);                                    // Integer aus Substring
+double getDouble(const std::string& source, int32_t start, int32_t end, bool leadingdecimalpointassumed); // Double aus Substring
 
 double revPerDay2RadPerMin(double value); // Wandelt Einheit [rev/day] in [rad/min] um
 
@@ -36,7 +36,7 @@ double deg2rad(double angle); // Wandelt Winkel in [rad] um
 
 double rad2deg(double rad); // Wandelt Rad in Winkel um
 
-int checkyear(unsigned int value);
+int32_t checkyear(uint32_t value);
 
 // ################################
 // zu Aufgabe 1.2:
@@ -45,5 +45,3 @@ double get_a(double T);                    // Berechnet große Halbachse in [km]
 double getTrueAnomaly(double e, double M); // Berechnet Wahre Anomalie
 
 // ################################
-
-#endif /// PROCESSING_H

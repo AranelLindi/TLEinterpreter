@@ -2,11 +2,11 @@
 // Betrieb des TLEInterpreter benötigt werden, sondern nur für die Ausgabe. Daher von üblicher
 // Praxis absehen)
 #include <iostream> // für Konsolen Ein- & Ausgabe
-#include <filesystem>
+#include <filesystem> // c++17 expansion
 
 #include "tleinterpreter.h" // HEADER
 
-extern const bool SONATE_ONLY; //
+extern consteval bool SONATE_ONLY; //
 
 int main(void)
 {

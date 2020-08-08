@@ -19,11 +19,12 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
 
         while (1) // Schleife läuft so lange, bis Abbruchbedingung (siehe unten) erreicht ist
         {
-            char *lineptr[3] = {nullptr}; // Hilfszeiger (zeigen je auf eine der drei Zeilen eines einzelnen TLEs)
+            //char *lineptr[3] = {nullptr}; // Hilfszeiger (zeigen je auf eine der drei Zeilen eines einzelnen TLEs)
+            std::array<std::unique_ptr<std::string>, 3> lineptr;
 
             std::string line_str; // temporärer Zwischenspeicher für immer jeweils eine Zeile (Strings sind veränderbar)
 
-            int key = 0; // enthält später die Satelliten-Nr
+            int32_t key { 0 }; // enthält später die Satelliten-Nr
 
             for (int i = 0; i < 3; i++) // gleiche Prodzedur für jede der drei Zeilen des TLE
             {
@@ -36,18 +37,19 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
                 // Dateiende erreicht ist. (Zur Info: Hier hat (! (file.eof()) ) nicht funktioniert!)
 
                 // Wichtig: string.c_str() liefert einen (const char*), benötigt wird aber ein (char*), daher umwandeln:
-                lineptr[i] = convertConstCharPtrToCharPtr(line_str);
+                //lineptr[i] = convertConstCharPtrToCharPtr(line_str);
+                lineptr[i] = std::make_unique<std::string>(line_str);
             }
 
             if (lastTle == true)
                 break; // Gehört zur Abbruchbedingung: while-Schleife beenden
 
-            key = getInteger(lineptr[1], Satellite_Number, Satellite_Number_End); // Satelliten-Nr. aus zweiten Zeile extrahieren
+            key = getInteger(*lineptr[1].get(), Satellite_Number, Satellite_Number_End); // Satelliten-Nr. aus zweiten Zeile extrahieren
 
-            Tle tle = Tle(lineptr[0], lineptr[1], lineptr[2]); // neues TLE Objekt anlegen & Zeilen an Konstruktor übergeben...
+            Tle tle = Tle(*lineptr[0].get(), *lineptr[1].get(), *lineptr[2].get()); // neues TLE Objekt anlegen & Zeilen an Konstruktor übergeben...
 
             // prüfen ob Zeile 2 und 3 gültig sind, falls nicht, nicht parsen und TLE nicht aufnehmen:
-            if (tle.isTleLineValid(lineptr[1]) && tle.isTleLineValid(lineptr[2]))
+            if (tle.isTleLineValid(*lineptr[1].get()) && tle.isTleLineValid(*lineptr[2].get()))
             {
 
                 std::pair<int, Tle> _pair(key, tle); // ... neues pair Objekt anlegen mit TLE Objekt füllen, Zähler inkremntieren...
@@ -56,7 +58,7 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
             }
 
             //break; // zu Testzwecken entkommentieren, dann wird nur ein (gültiges) TLE gelesen
-        };
+        }; // smart pointer objects are destroyed here... in next iteration, new unique_ptrs will be created... => no memory leaks
     }
     catch (const std::exception &e)
     {
@@ -69,82 +71,62 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
     return TLEs; // fertige map zurückgeben
 }
 
-char *getSubString(const char *source, int start, int end) // Gibt einen Zeiger auf einen Teilstring einer Zeile zurück.
+int32_t getInteger(const std::string& source, int32_t start, int32_t end) // Gibt Zahl aus TLE als Integer zurück
 {
-    int delta = end - start + 1; // Länge des zurückgegebenen Strings. +1 folgt, da statt [start, end) dann [start, end] zurückgegeben wird
-
-    //if ( delta < 1 ) return nullptr; // Es muss mindestens ein Zeichen gelesen werden
-
-    char *subString = new char[(delta + 1)]; // Feldlänge + 1 für Stringabschlusszeichen
-
-    std::strncpy(subString, source + (start - 1), delta); // kopiert Teilstring aus Zeile in subString (Nichts mehr an Konstanten (Additionen/Subtraktionen) verändern!!)
-
-    subString[delta] = '\0'; // Stringabschlusszeichen hinzufügen
-
-    return subString;
-}
-
-int getInteger(const char *source, int start, int end) // Gibt Zahl aus TLE als Integer zurück
-{
-    char *str_number = getSubString(source, start, end); // Zeiger auf Teilstring
+    //char *str_number = getSubString(source, start, end); // Zeiger auf Teilstring
+    std::string str_number = source.substr(start, end);
 
     // ******************************** WICHTIG ! *******************************
     // Prüfen ob Zeichen im String stehen, die bei einer Konvertierung Fehler verursachen würden:
-    int counter = 0; // Zählt Position mit
+    uint16_t counter { 0 }; // Zählt Position mit
+    
     while (!isdigit(str_number[counter]) | (str_number[counter] == '-'))
         counter++; // Aussage ( !A | B ) validiert!
 
-    // wurde in obiger Schleife unzulässige Zeichen gefunden, neuen Index Teilstring bekommen, dazu counter-Felder vorrücken:
+    // wurde in obiger Schleife unzulässige Zeichen gefunden, neuen Index Teilstring bekommen, dazu "Anzahl counter"-Felder vorrücken:
     if (counter > 0)
-        str_number = getSubString(source, start + counter, end);
+        str_number = str_number.substr(counter, end); // sind strings änderbar?
+        //str_number = getSubString(source, start + counter, end);
     // **************************************************************************
 
-    int number = std::stoi(str_number); // string in int konvertieren
+    int32_t number = std::stoi(str_number); // string in int konvertieren
 
     return number;
 }
 
-double getDouble(const char *source, int start, int end, bool leadingdecimalpointassumed) // Gibt Nummer aus TLE als Double zurück (mit Column-Daten aus Definition arbeiten!)
+double getDouble(const std::string& source, int32_t start, int32_t end, bool leadingdecimalpointassumed) // Gibt Nummer aus TLE als Double zurück (mit Column-Daten aus Definition arbeiten!)
 {
-    char *str_number = getSubString(source, start, end); // Zeiger auf Teilstring
+    std::string str_number = source.substr(start, end); // getSubString(source, start, end); // Zeiger auf Teilstring
 
     // ******************************** WICHTIG ! *******************************
     // Prüfen ob Zeichen im String stehen, die bei einer Konvertierung Fehler verursachen würden
-    int counter = 0;
+    uint16_t counter { 0 };
+
     while (!isdigit(str_number[counter]) | (str_number[counter] == '-'))
         counter++; // Aussage ( !A | B ) validiert!
 
     // wurde in obiger Schleife unzulässige Zeichen gefunden, neuen Index Teilstring bekommen, dazu counter-Felder vorrücken:
     if (counter > 0)
-        str_number = getSubString(source, start + counter, end);
+        str_number = str_number.substr(counter, end); // getSubString(source, start + counter, end);
     // **************************************************************************
 
     // ************************ Führender Dezimalpunkt **************************
-    char *str_number_helper = str_number; // Hilfszeiger
 
     if (leadingdecimalpointassumed) // Soll an erster Stelle noch ein Komma eingefügt werden:
     {
-        str_number_helper = (char *)malloc((strlen(str_number) + 1) * sizeof(char)); // Ursprüngliche Feldlänge + 1 anlegen um in erstes Feld...
-
-        str_number_helper[0] = '.'; // ... Dezimalpunkt zu schreiben
-
-        stringcopy(str_number, &str_number_helper[1]); // String kopieren, aber im Ziel erst ab zweitem Feld einfügen
-
-        str_number = str_number_helper; // Rückzuweisung um auf gleicher Gleis zu sein
+        str_number = "." + str_number;
     }
     // ***************************************************************************
-
-    double number = 0; // enthält später Gleitkommazahl
 
     // ############################################################################
     // Hier darauf achten, dass Gleitkommazahlen ihren Exponenten bekommen!
     // Diesen hier rausfiltern:
 
     // Alle Zeichen einzeln scannen und nach Exp.-Anteil suchen: (Format: -NNNNNN-N)
-    int pos = 0;
+    uint16_t pos { 0 };
     // von hinten nach vorne nach einem Minus suchen (das ist dann der Exponent). Erste Stelle auslassen, könnte ein normales Vorzeichen sein!
     // Letzte Stelle ebenfalls auslassen, ein Minus dort ergäbe keinen Sinn. (NNNN-) (Deswegen i=...-1 !)
-    for (int i = (std::strlen(str_number) - 1); i > 1; i--)
+    for (uint32_t i = (str_number.length()) - 1; i > 1; i--)
     {
         if (str_number[i] == '-' || str_number[i] == '+')
         {
@@ -154,25 +136,22 @@ double getDouble(const char *source, int start, int end, bool leadingdecimalpoin
         }
     }
 
+    double number { 0.0 }; // enthält später Gleitkommazahl
+
     if (!(pos == 0)) // wird nur ausgeführt, wenn ein Exponent erkannt wurde (Minus inmitten der Zahl)
     {
         // Zahl hinter Minus extrahieren: (das ist der Exponent)
-        int exponent_length = (end - start + 1) - pos; // (end - start + 1) entspricht der Länge der Information (delta), "- pos" ergibt die Anzahl Stellen des Exponenten
-        char exponent[exponent_length];                // Array mit Größe der Länge des Exponenten anlegen
+        uint16_t exponent_length = (end - start + 1) - pos; // (end - start + 1) entspricht der Länge der Information (delta), "- pos" ergibt die Anzahl Stellen des Exponenten
 
-        // Ziffern des Exponenten in Array verfrachten:
-        for (int i = 0; i < exponent_length; i++)
-        {
-            exponent[i] = str_number[pos + i + 1]; // pos + 1 ist erstes Zeichen nach Vorzeichen
-        }
+        std::string exponent = str_number.substr(pos, exponent_length);
 
         // Exponenten als Integer darstellen:
-        int exp = std::stoi(exponent);
+        int32_t exp = (std::stoi(exponent));
         if (str_number[pos] == '-')
             exp = -exp; // ggf. Vorzeichenwechsel
 
         // Mantisse in double konvertieren
-        char *mantisseptr = getSubString(str_number, 1, pos); // +1 da in SubString wieder abgezogen!
+        std::string mantisseptr = str_number.substr(1, pos); // getSubString(str_number, 1, pos); // +1 da in SubString wieder abgezogen!
 
         // Mantisse zusammensetzen: (ruft Lambda auf!)
         double mantisse = std::stod(mantisseptr);
@@ -192,23 +171,6 @@ double getDouble(const char *source, int start, int end, bool leadingdecimalpoin
     return number;
 }
 
-char *convertConstCharPtrToCharPtr(std::string sstring) // string.c_str() liefert einen (const char*), benötigt wird aber (char*), daher umwandeln nötig
-{
-    char *writeable = new char[sstring.size() + 1]; // erstellt char-Zeiger (inkl. allokiertem Speicher) mit Länge von line + 1 (für Stringabschlusszeichen)
-
-    std::copy(sstring.begin(), sstring.end(), writeable); // kopiert line auf neu allokierten Speicher auf den writeable zeigt
-    writeable[sstring.size()] = '\0';                     // fügt C Stringabschlusszeichen hinten an
-    // writeable *NICHT* freigeben, da sonst gerade kopierter String ebenfalls freigegeben wird!
-    return writeable;
-}
-
-void stringcopy(char *source, char *dest) // einfache Funktion um char-Array zu kopieren
-{
-    // Wichtig! source muss größer gleich dest sein (gemeint ist Feldlänge auf Stack) und letztes Zeichen von dest muss '\0' sein! (Abbruchbedingung)
-    while ((*dest++ = *source++))
-        ;
-}
-
 double get_a(double f) // Berechnet über die mittlere Bewegungszeit und der Konstanten GM die große Halbachse a in Kilometern [km] !
 {
     if (f == 0)
@@ -217,7 +179,6 @@ double get_a(double f) // Berechnet über die mittlere Bewegungszeit und der Kon
     double T_in_s = 2 * M_PI * 60 * (1 / f); // Enthält Anzahl Sekunden pro Umlauf (T)
 
     return (cbrt(0.25 * GM * (powf(T_in_s / M_PI, 2)))) / 1000; // Berechnung in km!
-    //return cbrt(GM * pow(T_in_s, 2) * 1 / (4 * pow(M_PI, 2))); // (cbrt ist die kubische Wurzel)
 }
 
 double getTrueAnomaly(double e, double M) // Berechnet mittels Newton-Verfahren und numerische Exzentrizität sowie mittlerer Anomalie die wahre Anomalie (Newton-Verfahren)
@@ -235,9 +196,7 @@ double getTrueAnomaly(double e, double M) // Berechnet mittels Newton-Verfahren 
     for (uint8_t i = 0; i < 10; i++)
     {
         if (f(x0) == 0)
-        {
             break; // Division durch Null abfangen
-        }
 
         x0 = x0 - (F(x0) / f(x0)); // Newton-Verfahren
     }                              // while (counter < 5);//std::fabs(F(x0)) > 1e-10);
@@ -276,15 +235,9 @@ int checkyear(unsigned int value)
     // 57 - 99 entspricht 1957 - 1999
     // 00 - 56 entspricht 2000 - 2056
     if (value < 57)
-    {
         return 2000 + value;
-    }
     else if (value > 56)
-    {
         return 1900 + value;
-    }
     else
-    {
         return value;
-    }
 }

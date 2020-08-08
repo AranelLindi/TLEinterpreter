@@ -1,5 +1,4 @@
-#ifndef TLE_H
-#define TLE_H
+#pragma once
 
 // Standartbibliotheken
 #include <iostream> // Konsolenausgabe ( hier mit printf() )
@@ -14,10 +13,10 @@ class Tle
     //private: // Private ist Standartzugriffslevel bei Klassen!
 
     // Variablen
-    char satelliteName[25] = {'\0'}; ///< name of the satellite
-    int satelliteNr;                 ///< satellite catalog nr
-    char intDesignator[9] = {'\0'};  ///< international designator
-    int year;                        ///< year of the epoch (e. g. 2020)
+    char satelliteName[25] { '\0' };  ///< name of the satellite
+    int32_t satelliteNr;                 ///< satellite catalog nr
+    char intDesignator[9] { '\0' };   ///< international designator
+    int32_t year;                        ///< year of the epoch (e. g. 2020)
     double dayFraction;              ///< day fraction of the epoch
     double bStar;                    ///< drag term
 
@@ -33,9 +32,9 @@ class Tle
 public:
     // Getter
     std::string getSatelliteName();
-    int getSatelliteNr();
+    int32_t getSatelliteNr();
     std::string getintDesignator();
-    int getYear();
+    int32_t getYear();
     double getDayFraction();
     double getBstar();
 
@@ -48,12 +47,10 @@ public:
 
     // ******
     Tle();                                      // Standartkonstruktor (wird von Interpreter nicht verwendet!)
-    Tle(char *line0, char *line1, char *line2); // Konstruktor
+    Tle(const std::string& line0, const std::string& line1, const std::string& line2); // Konstruktor
 
     // Funktionen
-    void populateTle(char *line0, char *line1, char *line2); // wird von Konstruktor aufgerufen
-    bool isTleLineValid(const char *line);                   // prüft für übergebene Zeile Gültigkeit (Prüfsumme)
+    void populateTle(const std::string& line0, const std::string& line1, const std::string& line2); // wird von Konstruktor aufgerufen
+    bool isTleLineValid(const std::string& line);                   // prüft für übergebene Zeile Gültigkeit (Prüfsumme)
     void print(void);                                        // gibt gesamtes TLE auf Konsole aus
 };
-
-#endif // TLE_H

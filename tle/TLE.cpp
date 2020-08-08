@@ -1,13 +1,13 @@
 #include "../reader/reader.h" // für getSubString()
 #include "TLE.h"              // HEADER
 
-extern const bool SONATE_ONLY; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll, für regulären Betrieb nicht beachten
+extern consteval bool SONATE_ONLY; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll, für regulären Betrieb nicht beachten
 
 // Überladungen der in der Headerdatei (TLE.h) definierten Funktionen
 
 Tle::Tle() {} // Hier fehlt eventuell noch etwas!
 
-Tle::Tle(char *line0, char *line1, char *line2) // Konstruktor
+Tle::Tle(const std::string& line0, const std::string& line1, const std::string& line2) // Konstruktor
 {
     // Variablen initialisieren (Arrays ausgenommen, (wurden schon))
     satelliteNr = 0;
@@ -25,19 +25,18 @@ Tle::Tle(char *line0, char *line1, char *line2) // Konstruktor
     this->populateTle(line0, line1, line2);
 }
 
-void Tle::populateTle(char *line0, char *line1, char *line2) // wird von Konstruktor aufgerufen
+void Tle::populateTle(const std::string& line0, const std::string& line1, const std::string& line2) // wird von Konstruktor aufgerufen
 {
     // Daten aus Zeilen extrahieren und in entsprechenden Variablen speichern:
 
     // # LINE 0
     // Satelliten-Name:
-    stringcopy(line0, this->satelliteName);
+    this->satelliteName = line0.substr(Satellite_Name, Satellite_Name_End);
     // # LINE 1
     // Satelliten-Nummer:
     this->satelliteNr = getInteger(line1, Satellite_Number, Satellite_Number_End);
     // International Designator: (mehrere Informationen gebündelt!)
-    char *intDesignator_ptr = getSubString(line1, International_Designator_Year, International_Designator_PieceOfLaunch_End);
-    stringcopy(intDesignator_ptr, this->intDesignator);
+    this->intDesignator = line1.substr(International_Designator_Year, International_Designator_PieceOfLaunch_End);
     // year
     this->year = checkyear(getInteger(line1, Epoch_Year, Epoch_Year_End));
     // dayFraction
@@ -85,7 +84,7 @@ double Tle::getArgumentOfPerigee() { return this->argumentOfPerigee; }
 double Tle::getMeanAnomaly() { return this->meanAnomaly; }
 double Tle::getMeanMotion() { return this->meanMotion; }
 
-bool Tle::isTleLineValid(const char *line) // prüft für Zeile Gültigkeit
+bool Tle::isTleLineValid(const std::string& line) // prüft für Zeile Gültigkeit
 {
     // Prüfen ob die Zeilen länge genau 69 Zeichen lang ist:
     //if (strlen(line) != 69) return false;
@@ -185,5 +184,5 @@ void Tle::print(void) // Ausgabe gesamtes TLE
 
     // Schönheitsabstand zu nächstem Datensatz:
     std::cout << "\n\n"
-              << std::flush; // erst zum Ende flushen, kostet sonst viel Leistung
+              << std::flush; // erst zum Ende flushen, ist sonst zu teuer
 }

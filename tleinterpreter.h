@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 * TLE Interpreter v. 1.0
 *
@@ -8,14 +10,9 @@
 
 // Um TLEInterpreter zu verwenden, diesen Header includen!
 
-#ifndef TLEINTERPRETER_H
-#define TLEINTERPRETER_H
-
 // Relevant Header-Files
 #include "tle/TLE.h"
 #include "reader/reader.h"
 
 // Global Variables
-extern const bool SONATE_ONLY; // Was only needed for a sub-task.
-
-#endif // tleinterpreter.h
+extern consteval bool SONATE_ONLY; // Was only needed for a sub-task.
