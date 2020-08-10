@@ -3,10 +3,12 @@
 // Praxis absehen)
 #include <iostream> // für Konsolen Ein- & Ausgabe
 #include <filesystem> // c++17 expansion
+#include <string> // std::strings
+
 
 #include "tleinterpreter.h" // HEADER
 
-extern consteval bool SONATE_ONLY; //
+extern const bool SONATE_ONLY; //
 
 int main(void)
 {
@@ -38,4 +40,4 @@ int main(void)
     return 0;
 }
 
-// to build with: $ g++ -o [exec.-Name] main.cpp TLE.cpp process.cpp -std=c++17
+// to build with: $ g++ -o [exec.-Name] main.cpp TLE.cpp process.cpp -std=c++2a

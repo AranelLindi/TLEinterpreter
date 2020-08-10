@@ -3,78 +3,78 @@
 
 // --LINE 0
 
-#define Satellite_Name 1
-#define Satellite_Name_End 24
+#define Satellite_Name_pos 0
+#define Satellite_Name_length 24
 
 // --LINE 1
 
-#define Line_Number 1
-#define Line_Number_End 1
+#define Line_Number_pos 0
+#define Line_Number_length 1
 
-#define Satellite_Number 3
-#define Satellite_Number_End 7
+#define Satellite_Number_pos 2
+#define Satellite_Number_length 5
 
-#define Classification 8
-#define Classification_End 8
+#define Classification_pos 7
+#define Classification_length 1
 
-#define International_Designator_Year 10
-#define International_Designator_Year_End 11
+#define International_Designator_Year_pos 9
+#define International_Designator_Year_length 2
 
-#define International_Designator_NoOfYear 12
-#define International_Designator_NoOfYear_End 14
+#define International_Designator_NoOfYear_pos 11
+#define International_Designator_NoOfYear_length 3
 
-#define International_Designator_PieceOfLaunch 15
-#define International_Designator_PieceOfLaunch_End 17
+#define International_Designator_PieceOfLaunch_pos 14
+#define International_Designator_PieceOfLaunch_length 3
 
-#define Epoch_Year 19
-#define Epoch_Year_End 20
+#define Epoch_Year_pos 18
+#define Epoch_Year_length 2
 
-#define Epoch_Day_Fraction 21
-#define Epoch_Day_Fraction_End 32
+#define Epoch_Day_Fraction_pos 20
+#define Epoch_Day_Fraction_length 12
 
-#define First_Time_Derivative_Mean_Motion 34
-#define First_Time_Derivative_Mean_Motion_End 43
+#define First_Time_Derivative_Mean_Motion_pos 33
+#define First_Time_Derivative_Mean_Motion_length 10
 
-#define Second_Time_Derivative_Mean_Motion 45
-#define Second_Time_Derivative_Mean_Motion_End 52
+#define Second_Time_Derivative_Mean_Motion_pos 44
+#define Second_Time_Derivative_Mean_Motion_length 8
 
-#define BSTAR 54
-#define BSTAR_End 61
+#define BSTAR_pos 53
+#define BSTAR_length 8
 
-#define Ephemeris 63
-#define Ephereris_End 63
+#define Ephemeris_pos 62
+#define Ephereris_length 1
 
-#define Element_Number 65
-#define Element_Number_End 68
+#define Element_Number_pos 64
+#define Element_Number_length 4
 
-#define Checksum 69
-#define Checksum_End 69
+#define Checksum_pos 68
+#define Checksum_length 1
 
 // --LINE 2
 // ## Line Number identisch zu Line 1!
 
 // ## Satellite Number identisch zu Line 1!
 
-#define Inclination 9
-#define Inclination_End 16
+#define Inclination_pos 8
+#define Inclination_length 8
 
-#define Right_Ascension_Of_Ascending_Node 18
-#define Right_Ascension_Of_Ascending_Node_End 25
+#define Right_Ascension_Of_Ascending_Node_pos 17
+#define Right_Ascension_Of_Ascending_Node_length 8
 
-#define Eccentricity 27
-#define Eccentricity_End 33
+#define Eccentricity_pos 26
+#define Eccentricity_length 7
 
-#define Argument_Of_Perigee 35
-#define Argument_Of_Perigee_End 42
+#define Argument_Of_Perigee_pos 34
+#define Argument_Of_Perigee_length 8
 
-#define Mean_Anomaly 44
-#define Mean_Anomaly_End 51
+#define Mean_Anomaly_pos 43
+#define Mean_Anomaly_length 8
 
-#define Mean_Motion 53
-#define Mean_Motion_End 63
+#define Mean_Motion_pos 52
+#define Mean_Motion_length 11
 
-#define Revolution_Number_At_Epoch 64
-#define Revolution_Number_At_Epoch_End 68
+#define Revolution_Number_At_Epoch_pos 63
+#define Revolution_Number_At_Epoch_length 5
 
 // ## Checksum identisch zu Line 1!
 

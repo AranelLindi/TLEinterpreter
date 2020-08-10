@@ -24,7 +24,7 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
 
             std::string line_str; // temporärer Zwischenspeicher für immer jeweils eine Zeile (Strings sind veränderbar)
 
-            int32_t key { 0 }; // enthält später die Satelliten-Nr
+            int32_t key{0}; // enthält später die Satelliten-Nr
 
             for (int i = 0; i < 3; i++) // gleiche Prodzedur für jede der drei Zeilen des TLE
             {
@@ -44,7 +44,7 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
             if (lastTle == true)
                 break; // Gehört zur Abbruchbedingung: while-Schleife beenden
 
-            key = getInteger(*lineptr[1].get(), Satellite_Number, Satellite_Number_End); // Satelliten-Nr. aus zweiten Zeile extrahieren
+            key = getInteger(*lineptr[1].get(), Satellite_Number_pos, Satellite_Number_length); // Satelliten-Nr. aus zweiten Zeile extrahieren
 
             Tle tle = Tle(*lineptr[0].get(), *lineptr[1].get(), *lineptr[2].get()); // neues TLE Objekt anlegen & Zeilen an Konstruktor übergeben...
 
@@ -71,22 +71,22 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
     return TLEs; // fertige map zurückgeben
 }
 
-int32_t getInteger(const std::string& source, int32_t start, int32_t end) // Gibt Zahl aus TLE als Integer zurück
+int32_t getInteger(const std::string &source, int32_t start, int32_t len) // Gibt Zahl aus TLE als Integer zurück
 {
     //char *str_number = getSubString(source, start, end); // Zeiger auf Teilstring
-    std::string str_number = source.substr(start, end);
+    std::string str_number = source.substr(start, len);
 
     // ******************************** WICHTIG ! *******************************
     // Prüfen ob Zeichen im String stehen, die bei einer Konvertierung Fehler verursachen würden:
-    uint16_t counter { 0 }; // Zählt Position mit
-    
+    uint16_t counter{0}; // Zählt Position mit
+
     while (!isdigit(str_number[counter]) | (str_number[counter] == '-'))
         counter++; // Aussage ( !A | B ) validiert!
 
     // wurde in obiger Schleife unzulässige Zeichen gefunden, neuen Index Teilstring bekommen, dazu "Anzahl counter"-Felder vorrücken:
     if (counter > 0)
-        str_number = str_number.substr(counter, end); // sind strings änderbar?
-        //str_number = getSubString(source, start + counter, end);
+        str_number = str_number.substr(counter, len); // sind strings änderbar?
+    //str_number = getSubString(source, start + counter, end);
     // **************************************************************************
 
     int32_t number = std::stoi(str_number); // string in int konvertieren
@@ -94,38 +94,42 @@ int32_t getInteger(const std::string& source, int32_t start, int32_t end) // Gib
     return number;
 }
 
-double getDouble(const std::string& source, int32_t start, int32_t end, bool leadingdecimalpointassumed) // Gibt Nummer aus TLE als Double zurück (mit Column-Daten aus Definition arbeiten!)
+double getDouble(const std::string &source, int32_t start, int32_t len, bool leadingdecimalpointassumed) // Gibt Nummer aus TLE als Double zurück (mit Column-Daten aus Definition arbeiten!)
 {
-    std::string str_number = source.substr(start, end); // getSubString(source, start, end); // Zeiger auf Teilstring
+    std::string str_number = source.substr(start, len); // getSubString(source, start, end); // Zeiger auf Teilstring
 
-    // ******************************** WICHTIG ! *******************************
-    // Prüfen ob Zeichen im String stehen, die bei einer Konvertierung Fehler verursachen würden
-    uint16_t counter { 0 };
-
-    while (!isdigit(str_number[counter]) | (str_number[counter] == '-'))
-        counter++; // Aussage ( !A | B ) validiert!
-
-    // wurde in obiger Schleife unzulässige Zeichen gefunden, neuen Index Teilstring bekommen, dazu counter-Felder vorrücken:
-    if (counter > 0)
-        str_number = str_number.substr(counter, end); // getSubString(source, start + counter, end);
-    // **************************************************************************
-
-    // ************************ Führender Dezimalpunkt **************************
-
-    if (leadingdecimalpointassumed) // Soll an erster Stelle noch ein Komma eingefügt werden:
     {
-        str_number = "." + str_number;
-    }
-    // ***************************************************************************
+        // ******************************** WICHTIG ! *******************************
+        // Prüfen ob Zeichen im String stehen, die bei einer Konvertierung Fehler verursachen würden:
+        uint16_t counter{0};
 
+        while (!(isdigit(str_number[counter])) | (str_number[counter] == '-'))
+            counter++; // Aussage ( !A | B ) validiert!
+
+        // wurde in obiger Schleife unzulässige Zeichen gefunden, neuen Index Teilstring bekommen, dazu [Anzahl counter]-Felder vorrücken:
+        if (counter > 0)
+            str_number = str_number.substr(counter, len);
+        // **************************************************************************
+    }
+
+    {
+        // ************************ Führender Dezimalpunkt **************************
+
+        if (leadingdecimalpointassumed) // Soll an erster Stelle noch ein Komma eingefügt werden:
+        {
+            ////str_number = '.' + str_number;
+            str_number.insert(str_number.begin(), '.');
+        }
+        // ***************************************************************************
+    }
     // ############################################################################
     // Hier darauf achten, dass Gleitkommazahlen ihren Exponenten bekommen!
     // Diesen hier rausfiltern:
 
     // Alle Zeichen einzeln scannen und nach Exp.-Anteil suchen: (Format: -NNNNNN-N)
-    uint16_t pos { 0 };
+    uint16_t pos{0};
     // von hinten nach vorne nach einem Minus suchen (das ist dann der Exponent). Erste Stelle auslassen, könnte ein normales Vorzeichen sein!
-    // Letzte Stelle ebenfalls auslassen, ein Minus dort ergäbe keinen Sinn. (NNNN-) (Deswegen i=...-1 !)
+    // Letzte (und erste) Stelle ebenfalls auslassen, ein Minus dort ergäbe keinen Sinn. (NNNN-) (Deswegen i=...-1 !)
     for (uint32_t i = (str_number.length()) - 1; i > 1; i--)
     {
         if (str_number[i] == '-' || str_number[i] == '+')
@@ -136,14 +140,11 @@ double getDouble(const std::string& source, int32_t start, int32_t end, bool lea
         }
     }
 
-    double number { 0.0 }; // enthält später Gleitkommazahl
+    double number{0.0}; // enthält später Gleitkommazahl
 
-    if (!(pos == 0)) // wird nur ausgeführt, wenn ein Exponent erkannt wurde (Minus inmitten der Zahl)
+    if (pos != 0) // wird nur ausgeführt, wenn ein Exponent erkannt wurde (Minus inmitten der Zahl)
     {
-        // Zahl hinter Minus extrahieren: (das ist der Exponent)
-        uint16_t exponent_length = (end - start + 1) - pos; // (end - start + 1) entspricht der Länge der Information (delta), "- pos" ergibt die Anzahl Stellen des Exponenten
-
-        std::string exponent = str_number.substr(pos, exponent_length);
+        std::string exponent = str_number.substr(pos + 1, len - pos);
 
         // Exponenten als Integer darstellen:
         int32_t exp = (std::stoi(exponent));
@@ -151,7 +152,7 @@ double getDouble(const std::string& source, int32_t start, int32_t end, bool lea
             exp = -exp; // ggf. Vorzeichenwechsel
 
         // Mantisse in double konvertieren
-        std::string mantisseptr = str_number.substr(1, pos); // getSubString(str_number, 1, pos); // +1 da in SubString wieder abgezogen!
+        std::string mantisseptr = str_number.substr(0, pos - 1);
 
         // Mantisse zusammensetzen: (ruft Lambda auf!)
         double mantisse = std::stod(mantisseptr);

@@ -15,4 +15,4 @@
 #include "reader/reader.h"
 
 // Global Variables
-extern consteval bool SONATE_ONLY; // Was only needed for a sub-task.
+extern const bool SONATE_ONLY; // Was only needed for a sub-task.

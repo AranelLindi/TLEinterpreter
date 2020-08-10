@@ -1,7 +1,7 @@
 #include "../reader/reader.h" // für getSubString()
 #include "TLE.h"              // HEADER
 
-extern consteval bool SONATE_ONLY; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll, für regulären Betrieb nicht beachten
+extern const bool SONATE_ONLY; // Gibt an ob nur für Objekt SONATE Ausgabe vorgenommen werden soll, für regulären Betrieb nicht beachten
 
 // Überladungen der in der Headerdatei (TLE.h) definierten Funktionen
 
@@ -31,31 +31,31 @@ void Tle::populateTle(const std::string& line0, const std::string& line1, const 
 
     // # LINE 0
     // Satelliten-Name:
-    this->satelliteName = line0.substr(Satellite_Name, Satellite_Name_End);
+    strcpy(this->satelliteName, line0.substr(Satellite_Name_pos, Satellite_Name_length).c_str());
     // # LINE 1
     // Satelliten-Nummer:
-    this->satelliteNr = getInteger(line1, Satellite_Number, Satellite_Number_End);
+    this->satelliteNr = getInteger(line1, Satellite_Number_pos, Satellite_Number_length);
     // International Designator: (mehrere Informationen gebündelt!)
-    this->intDesignator = line1.substr(International_Designator_Year, International_Designator_PieceOfLaunch_End);
+    strcpy(this->intDesignator, line1.substr(International_Designator_Year_pos, International_Designator_Year_length + International_Designator_PieceOfLaunch_length).c_str());
     // year
-    this->year = checkyear(getInteger(line1, Epoch_Year, Epoch_Year_End));
+    this->year = checkyear(getInteger(line1, Epoch_Year_pos, Epoch_Year_length));
     // dayFraction
-    this->dayFraction = getDouble(line1, Epoch_Day_Fraction, Epoch_Day_Fraction_End, false);
+    this->dayFraction = getDouble(line1, Epoch_Day_Fraction_pos, Epoch_Day_Fraction_length, false);
     // bStar
-    this->bStar = getDouble(line1, BSTAR, BSTAR_End, true);
+    this->bStar = getDouble(line1, BSTAR_pos, BSTAR_length, true);
     // # LINE 2
     // Inklination
-    this->inclination = deg2rad(getDouble(line2, Inclination, Inclination_End, false));
+    this->inclination = deg2rad(getDouble(line2, Inclination_pos, Inclination_length, false));
     // raan
-    this->raan = deg2rad(getDouble(line2, Right_Ascension_Of_Ascending_Node, Right_Ascension_Of_Ascending_Node_End, false));
+    this->raan = deg2rad(getDouble(line2, Right_Ascension_Of_Ascending_Node_pos, Right_Ascension_Of_Ascending_Node_length, false));
     // eccentricity
-    this->eccentricity = getDouble(line2, Eccentricity, Eccentricity_End, true);
+    this->eccentricity = getDouble(line2, Eccentricity_pos, Eccentricity_length, true);
     // argumentOfPerigee
-    this->argumentOfPerigee = deg2rad(getDouble(line2, Argument_Of_Perigee, Argument_Of_Perigee_End, false));
+    this->argumentOfPerigee = deg2rad(getDouble(line2, Argument_Of_Perigee_pos, Argument_Of_Perigee_length, false));
     // meanAnomaly
-    this->meanAnomaly = deg2rad(getDouble(line2, Mean_Anomaly, Mean_Anomaly_End, false));
+    this->meanAnomaly = deg2rad(getDouble(line2, Mean_Anomaly_pos, Mean_Anomaly_length, false));
     // meanMotion
-    this->meanMotion = revPerDay2RadPerMin(getDouble(line2, Mean_Motion, Mean_Motion_End, false));
+    this->meanMotion = revPerDay2RadPerMin(getDouble(line2, Mean_Motion_pos, Mean_Motion_length, false));
 
     // Prüfen ob eine Zeile ungültig ist (Aussagenlogik: !A || !B == !(A && B) )
     if (!(isTleLineValid(line1) && isTleLineValid(line2)))

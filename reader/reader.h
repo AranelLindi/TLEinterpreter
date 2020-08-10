@@ -17,13 +17,13 @@
 #include "../tle/cdefines.h" // Spaltendefinitionen TLE
 #include "../tle/TLE.h"      // für Objekt Tle
 
-extern consteval bool SONATE_ONLY;
+extern const bool SONATE_ONLY;
 
 // Konstanten (für Aufgabe 1.2)
 const float GM = 3.985892856e14; // Gravitationskonstante * Masse d. Erde
 
 // Funktionenrümpfe
-std::map<int32_t, Tle> readTlesFromFile(std::string filename); // Aufgabenstellung
+std::map<int32_t, Tle> readTlesFromFile(const char* filename); // Aufgabenstellung
 
 int getInteger(const std::string& source, int32_t start, int32_t end);                                    // Integer aus Substring
 double getDouble(const std::string& source, int32_t start, int32_t end, bool leadingdecimalpointassumed); // Double aus Substring
