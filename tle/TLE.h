@@ -3,7 +3,8 @@
 // Standartbibliotheken
 #include <iostream> // Konsolenausgabe ( hier mit printf() )
 #include <ctype.h>  // Prüfungen von Charactern
-#include <cstring>  // Länge von char-Arrays
+#include <string>  // Länge von char-Arrays
+#include <cstdint> // für int-Types
 
 // eigener Code
 #include "cdefines.h" // Spaltennummern (TLE Definition)
@@ -27,23 +28,23 @@ class Tle
     double meanAnomaly;       ///< mean anomaly [rad]
     double meanMotion;        ///< mean motion [rad/min]
 
-    bool valid = false; ///< indicates of the TLE is valid
+    bool valid {false}; ///< indicates of the TLE is valid
 
 public:
     // Getter
-    std::string getSatelliteName();
-    int32_t getSatelliteNr();
-    std::string getintDesignator();
-    int32_t getYear();
-    double getDayFraction();
-    double getBstar();
+    std::string getSatelliteName() const;
+    int32_t getSatelliteNr() const;
+    std::string getintDesignator() const;
+    int32_t getYear() const;
+    double getDayFraction() const;
+    double getBstar() const;
 
-    double getInclination();
-    double getRaan();
-    double getEccentricity();
-    double getArgumentOfPerigee();
-    double getMeanAnomaly();
-    double getMeanMotion();
+    double getInclination() const;
+    double getRaan() const;
+    double getEccentricity() const;
+    double getArgumentOfPerigee() const;
+    double getMeanAnomaly() const;
+    double getMeanMotion() const;
 
     // ******
     Tle();                                      // Standartkonstruktor (wird von Interpreter nicht verwendet!)
@@ -51,6 +52,6 @@ public:
 
     // Funktionen
     void populateTle(const std::string& line0, const std::string& line1, const std::string& line2); // wird von Konstruktor aufgerufen
-    bool isTleLineValid(const std::string& line);                   // prüft für übergebene Zeile Gültigkeit (Prüfsumme)
-    void print(void);                                        // gibt gesamtes TLE auf Konsole aus
+    bool isTleLineValid(const std::string& line) const;                   // prüft für übergebene Zeile Gültigkeit (Prüfsumme)
+    void print(void) const;                                        // gibt gesamtes TLE auf Konsole aus
 };

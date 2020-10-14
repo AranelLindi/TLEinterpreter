@@ -3,7 +3,7 @@
 
 // GLOBALE VARIABLEN
 // Ist absichltich hier deklariert und im Header mit extern definiert! (Standartvorgehensweise)
-const bool SONATE_ONLY = false; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll. Für regulären Betrieb nicht beachten.
+const constexpr bool SONATE_ONLY{false}; // Gibt an, ob nur für Objekt SONATE Ausgabe vorgenommen werden soll. Für regulären Betrieb nicht beachten.
 
 std::map<int, Tle> readTlesFromFile(const char *fileName)
 {
@@ -51,7 +51,6 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
             // prüfen ob Zeile 2 und 3 gültig sind, falls nicht, nicht parsen und TLE nicht aufnehmen:
             if (tle.isTleLineValid(*lineptr[1].get()) && tle.isTleLineValid(*lineptr[2].get()))
             {
-
                 std::pair<int, Tle> _pair(key, tle); // ... neues pair Objekt anlegen mit TLE Objekt füllen, Zähler inkremntieren...
 
                 TLEs.insert(_pair); // ... pair Objekt in map einfügen
@@ -74,7 +73,7 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
 int32_t getInteger(const std::string &source, int32_t start, int32_t len) // Gibt Zahl aus TLE als Integer zurück
 {
     //char *str_number = getSubString(source, start, end); // Zeiger auf Teilstring
-    std::string str_number = source.substr(start, len);
+    std::string str_number{source.substr(start, len)};
 
     // ******************************** WICHTIG ! *******************************
     // Prüfen ob Zeichen im String stehen, die bei einer Konvertierung Fehler verursachen würden:
@@ -89,14 +88,14 @@ int32_t getInteger(const std::string &source, int32_t start, int32_t len) // Gib
     //str_number = getSubString(source, start + counter, end);
     // **************************************************************************
 
-    int32_t number = std::stoi(str_number); // string in int konvertieren
+    const int32_t number{std::stoi(str_number)}; // string in int konvertieren
 
     return number;
 }
 
 double getDouble(const std::string &source, int32_t start, int32_t len, bool leadingdecimalpointassumed) // Gibt Nummer aus TLE als Double zurück (mit Column-Daten aus Definition arbeiten!)
 {
-    std::string str_number = source.substr(start, len); // getSubString(source, start, end); // Zeiger auf Teilstring
+    std::string str_number{source.substr(start, len)}; // getSubString(source, start, end); // Zeiger auf Teilstring
 
     {
         // ******************************** WICHTIG ! *******************************
@@ -177,7 +176,7 @@ double get_a(double f) // Berechnet über die mittlere Bewegungszeit und der Kon
     if (f == 0)
         return 0; // Fall T = 0 abdecken (durch Null teilen!)
 
-    double T_in_s = 2 * M_PI * 60 * (1 / f); // Enthält Anzahl Sekunden pro Umlauf (T)
+    const double T_in_s{2 * M_PI * 60 * (1 / f)}; // Enthält Anzahl Sekunden pro Umlauf (T)
 
     return (cbrt(0.25 * GM * (powf(T_in_s / M_PI, 2)))) / 1000; // Berechnung in km!
 }
@@ -203,7 +202,7 @@ double getTrueAnomaly(double e, double M) // Berechnet mittels Newton-Verfahren 
     }                              // while (counter < 5);//std::fabs(F(x0)) > 1e-10);
 
     // exzentrische Anomalie in wahre Anomalie umrechnen:
-    double trueAnomaly = 2 * atan2((tan(x0 / 2) * sqrt((1 + e) / (1 - e))), 1);
+    const double trueAnomaly{2 * atan2((tan(x0 / 2) * sqrt((1 + e) / (1 - e))), 1)};
 
     // True Anomaly
 
@@ -230,15 +229,15 @@ double rad2deg(double rad) // Wandelt [rad] in [degree] um
     return (rad * 180.0 / M_PI);
 }
 
-int checkyear(unsigned int value)
+int32_t checkyear(unsigned int value)
 {
     // NORAD definiert Epochen wie folgt:
     // 57 - 99 entspricht 1957 - 1999
     // 00 - 56 entspricht 2000 - 2056
     if (value < 57)
-        return 2000 + value;
+        return (2000 + value);
     else if (value > 56)
-        return 1900 + value;
+        return (1900 + value);
     else
-        return value;
+        return -1;
 }

@@ -5,38 +5,26 @@ extern const bool SONATE_ONLY; // Gibt an ob nur für Objekt SONATE Ausgabe vorg
 
 // Überladungen der in der Headerdatei (TLE.h) definierten Funktionen
 
-Tle::Tle() {} // Hier fehlt eventuell noch etwas!
+Tle::Tle() {} // Standardkonstruktor
 
-Tle::Tle(const std::string& line0, const std::string& line1, const std::string& line2) // Konstruktor
+Tle::Tle(const std::string &line0, const std::string &line1, const std::string &line2) : satelliteNr(0), year(0), dayFraction(0), bStar(0), inclination(0), raan(0), eccentricity(0), argumentOfPerigee(0), meanAnomaly(0), meanMotion(0) // Konstruktor
 {
-    // Variablen initialisieren (Arrays ausgenommen, (wurden schon))
-    satelliteNr = 0;
-    year = 0;
-    dayFraction = 0;
-    bStar = 0;
-    inclination = 0;
-    raan = 0;
-    eccentricity = 0;
-    argumentOfPerigee = 0;
-    meanAnomaly = 0;
-    meanMotion = 0;
-
     // weiterführende Funktion aufrufen
     this->populateTle(line0, line1, line2);
 }
 
-void Tle::populateTle(const std::string& line0, const std::string& line1, const std::string& line2) // wird von Konstruktor aufgerufen
+void Tle::populateTle(const std::string &line0, const std::string &line1, const std::string &line2) // wird von Konstruktor aufgerufen
 {
     // Daten aus Zeilen extrahieren und in entsprechenden Variablen speichern:
 
     // # LINE 0
     // Satelliten-Name:
-    strcpy(this->satelliteName, line0.substr(Satellite_Name_pos, Satellite_Name_length).c_str());
+    strcpy((this->satelliteName), line0.substr(Satellite_Name_pos, Satellite_Name_length).c_str());
     // # LINE 1
     // Satelliten-Nummer:
     this->satelliteNr = getInteger(line1, Satellite_Number_pos, Satellite_Number_length);
     // International Designator: (mehrere Informationen gebündelt!)
-    strcpy(this->intDesignator, line1.substr(International_Designator_Year_pos, International_Designator_Year_length + International_Designator_PieceOfLaunch_length).c_str());
+    strcpy((this->intDesignator), line1.substr(International_Designator_Year_pos, International_Designator_Year_length + International_Designator_PieceOfLaunch_length).c_str());
     // year
     this->year = checkyear(getInteger(line1, Epoch_Year_pos, Epoch_Year_length));
     // dayFraction
@@ -59,43 +47,36 @@ void Tle::populateTle(const std::string& line0, const std::string& line1, const 
 
     // Prüfen ob eine Zeile ungültig ist (Aussagenlogik: !A || !B == !(A && B) )
     if (!(isTleLineValid(line1) && isTleLineValid(line2)))
-    {
         this->valid = false;
-    }
     else
-    {
         this->valid = true;
-    }
 }
 
 // GETTER
-std::string Tle::getSatelliteName() { return std::string(this->satelliteName); }
-int Tle::getSatelliteNr() { return this->satelliteNr; }
-std::string Tle::getintDesignator() { return std::string(this->intDesignator); }
-int Tle::getYear() { return this->year; }
-double Tle::getDayFraction() { return this->dayFraction; }
-double Tle::getBstar() { return this->bStar; }
+std::string Tle::getSatelliteName() const { return std::string(this->satelliteName); }
+int32_t Tle::getSatelliteNr() const { return this->satelliteNr; }
+std::string Tle::getintDesignator() const { return std::string(this->intDesignator); }
+int32_t Tle::getYear() const { return this->year; }
+double Tle::getDayFraction() const { return this->dayFraction; }
+double Tle::getBstar() const { return this->bStar; }
 
 // Rückgabe erfolgt stets in [rad] bzw. [rad/min]! (siehe 'Einlesen'!)
-double Tle::getInclination() { return this->inclination; }
-double Tle::getRaan() { return this->raan; }
-double Tle::getEccentricity() { return this->eccentricity; }
-double Tle::getArgumentOfPerigee() { return this->argumentOfPerigee; }
-double Tle::getMeanAnomaly() { return this->meanAnomaly; }
-double Tle::getMeanMotion() { return this->meanMotion; }
+double Tle::getInclination() const { return this->inclination; }
+double Tle::getRaan() const { return this->raan; }
+double Tle::getEccentricity() const { return this->eccentricity; }
+double Tle::getArgumentOfPerigee() const { return this->argumentOfPerigee; }
+double Tle::getMeanAnomaly() const { return this->meanAnomaly; }
+double Tle::getMeanMotion() const { return this->meanMotion; }
 
-bool Tle::isTleLineValid(const std::string& line) // prüft für Zeile Gültigkeit
+bool Tle::isTleLineValid(const std::string &line) const // prüft für Zeile Gültigkeit
 {
-    // Prüfen ob die Zeilen länge genau 69 Zeichen lang ist:
-    //if (strlen(line) != 69) return false;
-
-    int sum = 0; // summiert alles auf (Feldwerte)
+    uint16_t sum {0}; // summiert alles auf (Feldwerte)
 
     // Fallunterscheidung: Ziffern addieren, Minuszeichen mit '1' bewerten, restliche Zeichen ignorieren
     // Ergebnis modulo 10 nehmen und mit Checksum der Zeile vergleichen (69). Bool zurückgeben.
     for (int i = 0; i < 68; i++)
     {
-        char chr = line[i]; // aktuelles Zeichen
+        const int8_t chr {line[i]}; // aktuelles Zeichen
 
         if (chr == ' ' || chr == '+' || chr == '.' || std::isalpha(chr))
             continue; // isalpha() : bool IstBuchstabe()
@@ -103,7 +84,7 @@ bool Tle::isTleLineValid(const std::string& line) // prüft für Zeile Gültigke
             sum++; // + 1
         else
         {
-            int number = (int)(chr - '0'); // std::atoi() ist Schrott und hat hier Fehler verursacht! Besser so *char in int konvertieren!
+            const int8_t number = (int8_t)(chr - '0'); // std::atoi() ist Schrott und hat hier Fehler verursacht! Besser so *char in int konvertieren!
             sum += number;
         }
     }
@@ -114,52 +95,46 @@ bool Tle::isTleLineValid(const std::string& line) // prüft für Zeile Gültigke
     return (line[68] - '0') == sum;
 }
 
-void Tle::print(void) // Ausgabe gesamtes TLE
+void Tle::print(void) const // Ausgabe gesamtes TLE
 {
     std::cout.precision(8); // Ändert die Anzahl der ausgegebenen Nachkommastellen.
 
     // Info: Zeilenumbruch für nächstes Element wird stets im vorherigen Schritt durchgeführt
 
-    int counter; // Temporärer Counter für mehrere Zwischenoperationen
+    uint32_t counter {0}; // Temporärer Counter für mehrere Zwischenoperationen
     // ##
     std::cout << "satelliteName\t:\t";
     counter = 25;
-    while (counter--)
-    {
-        std::cout << this->satelliteName[24 - counter];
-    }
+    while (counter--) std::cout << this->getSatelliteName()[24 - counter];
     std::cout << '\n';
     // ##
-    std::cout << "satelliteNr\t:\t" << this->satelliteNr << '\n';
+    std::cout << "satelliteNr\t:\t" << this->getSatelliteNr() << '\n';
     // ##
     std::cout << "intDesignator\t:\t";
     counter = 9;
-    while (counter--)
-    {
-        std::cout << this->intDesignator[8 - counter];
-    }
+    while (counter--) std::cout << this->getintDesignator()[8 - counter];
     std::cout << '\n';
     // ##
-    std::cout << "year\t\t:\t" << this->year << '\n';
+    std::cout << "year\t\t:\t" << this->getYear() << '\n';
     // ##
-    std::cout << "dayFraction\t:\t" << this->dayFraction << '\n';
+    std::cout << "dayFraction\t:\t" << this->getDayFraction() << '\n';
     // ##
-    std::cout << "Bstar\t\t:\t" << this->bStar << '\n';
+    std::cout << "Bstar\t\t:\t" << this->getBstar() << '\n';
     // ##
     std::cout << '\n';
     std::cout << std::fixed; // ab hier werden Zahlen bündig dargestellt
     // ##
-    std::cout << "inclination\t:\t" << this->inclination << " [rad]" << '\t' << rad2deg(this->inclination) << " [deg]" << '\n';
+    std::cout << "inclination\t:\t" << this->getInclination() << " [rad]" << '\t' << rad2deg(this->getInclination()) << " [deg]" << '\n';
     // ##
-    std::cout << "raan\t\t:\t" << this->raan << " [rad]" << '\t' << rad2deg(this->raan) << " [deg]" << '\n';
+    std::cout << "raan\t\t:\t" << this->getRaan() << " [rad]" << '\t' << rad2deg(this->getRaan()) << " [deg]" << '\n';
     // ##
-    std::cout << "eccentricity\t:\t" << this->eccentricity << '\n';
+    std::cout << "eccentricity\t:\t" << this->getEccentricity() << '\n';
     // ##
-    std::cout << "argOfPerigee\t:\t" << this->argumentOfPerigee << " [rad]" << '\t' << rad2deg(this->argumentOfPerigee) << " [deg]" << '\n';
+    std::cout << "argOfPerigee\t:\t" << this->getArgumentOfPerigee() << " [rad]" << '\t' << rad2deg(this->getArgumentOfPerigee()) << " [deg]" << '\n';
     // ##
-    std::cout << "meanAnomaly\t:\t" << this->meanAnomaly << " [rad]" << '\t' << rad2deg(this->meanAnomaly) << " [deg]" << '\n';
+    std::cout << "meanAnomaly\t:\t" << this->getMeanAnomaly() << " [rad]" << '\t' << rad2deg(this->getMeanAnomaly()) << " [deg]" << '\n';
     // ##
-    std::cout << "meanMotion\t:\t" << this->meanMotion << " [rad/min]" << '\t' << rad2deg(this->meanMotion) << " [deg/min]" << '\n';
+    std::cout << "meanMotion\t:\t" << this->getMeanMotion() << " [rad/min]" << '\t' << rad2deg(this->getMeanMotion()) << " [deg/min]" << '\n';
     // ##
     std::cout << '\n';
     // ##
@@ -173,8 +148,8 @@ void Tle::print(void) // Ausgabe gesamtes TLE
         // - Große Halbachse a
         // - Wahre Anomalie
 
-        double _a = get_a(this->getMeanMotion()); // Einheit: [km]
-        double _ny = getTrueAnomaly(this->getEccentricity(), this->getMeanAnomaly());
+        const double _a {get_a(this->getMeanMotion())}; // Einheit: [km]
+        const double _ny {getTrueAnomaly(this->getEccentricity(), this->getMeanAnomaly())};
 
         std::cout << "Zusätzliche Bahnelemente:"
                   << "\n\n";

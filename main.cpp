@@ -1,10 +1,9 @@
 // Standartbibliothek (können in der .cpp Datei bleiben, da sie nicht für den generellen
 // Betrieb des TLEInterpreter benötigt werden, sondern nur für die Ausgabe. Daher von üblicher
 // Praxis absehen)
-#include <iostream> // für Konsolen Ein- & Ausgabe
+#include <iostream>   // für Konsolen Ein- & Ausgabe
 #include <filesystem> // c++17 expansion
-#include <string> // std::strings
-
+#include <string>     // std::strings
 
 #include "tleinterpreter.h" // HEADER
 
@@ -26,7 +25,7 @@ int main(void)
         return 1; // EXIT_FAILURE
 
     // Daten aus Datei einlesen und map erzeugen:
-    std::map<int, Tle> TLEs = readTlesFromFile(filename.c_str());
+    const std::map<int, Tle> TLEs{readTlesFromFile(filename.c_str())};
 
     // Iteriert durch map und löst für jedes Element Funktion print() aus. (Lambda-Ausdruck! Erfordert C++11!)
     std::for_each(TLEs.begin(), TLEs.end(), [](std::pair<int, Tle> element) {
