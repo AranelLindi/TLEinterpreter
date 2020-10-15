@@ -46,7 +46,7 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
 
             key = getInteger(*lineptr[1].get(), Satellite_Number_pos, Satellite_Number_length); // Satelliten-Nr. aus zweiten Zeile extrahieren
 
-            Tle tle = Tle(*lineptr[0].get(), *lineptr[1].get(), *lineptr[2].get()); // neues TLE Objekt anlegen & Zeilen an Konstruktor übergeben...
+            const Tle tle {Tle(*lineptr[0].get(), *lineptr[1].get(), *lineptr[2].get())}; // neues TLE Objekt anlegen & Zeilen an Konstruktor übergeben...
 
             // prüfen ob Zeile 2 und 3 gültig sind, falls nicht, nicht parsen und TLE nicht aufnehmen:
             if (tle.isTleLineValid(*lineptr[1].get()) && tle.isTleLineValid(*lineptr[2].get()))
@@ -129,7 +129,7 @@ double getDouble(const std::string &source, int32_t start, int32_t len, bool lea
     uint16_t pos{0};
     // von hinten nach vorne nach einem Minus suchen (das ist dann der Exponent). Erste Stelle auslassen, könnte ein normales Vorzeichen sein!
     // Letzte (und erste) Stelle ebenfalls auslassen, ein Minus dort ergäbe keinen Sinn. (NNNN-) (Deswegen i=...-1 !)
-    for (uint32_t i = (str_number.length()) - 1; i > 1; i--)
+    for (uint32_t i {(str_number.length()) - 1}; i > 1; i--)
     {
         if (str_number[i] == '-' || str_number[i] == '+')
         {
@@ -143,7 +143,7 @@ double getDouble(const std::string &source, int32_t start, int32_t len, bool lea
 
     if (pos != 0) // wird nur ausgeführt, wenn ein Exponent erkannt wurde (Minus inmitten der Zahl)
     {
-        std::string exponent = str_number.substr(pos + 1, len - pos);
+        std::string exponent {str_number.substr(pos + 1, len - pos)};
 
         // Exponenten als Integer darstellen:
         int32_t exp = (std::stoi(exponent));
@@ -151,10 +151,10 @@ double getDouble(const std::string &source, int32_t start, int32_t len, bool lea
             exp = -exp; // ggf. Vorzeichenwechsel
 
         // Mantisse in double konvertieren
-        std::string mantisseptr = str_number.substr(0, pos - 1);
+        std::string mantisseptr {str_number.substr(0, pos - 1)};
 
         // Mantisse zusammensetzen: (ruft Lambda auf!)
-        double mantisse = std::stod(mantisseptr);
+        double mantisse {std::stod(mantisseptr)};
 
         // Komplette Zahl konstruieren: (Mantisse, Exponenten)
         number = mantisse * std::pow(10, exp);

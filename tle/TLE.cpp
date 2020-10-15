@@ -70,13 +70,13 @@ double Tle::getMeanMotion() const { return this->meanMotion; }
 
 bool Tle::isTleLineValid(const std::string &line) const // prüft für Zeile Gültigkeit
 {
-    uint16_t sum {0}; // summiert alles auf (Feldwerte)
+    uint16_t sum{0}; // summiert alles auf (Feldwerte)
 
     // Fallunterscheidung: Ziffern addieren, Minuszeichen mit '1' bewerten, restliche Zeichen ignorieren
     // Ergebnis modulo 10 nehmen und mit Checksum der Zeile vergleichen (69). Bool zurückgeben.
-    for (int i = 0; i < 68; i++)
+    for (int i{0}; i < 68; i++)
     {
-        const int8_t chr {line[i]}; // aktuelles Zeichen
+        const int8_t chr{line[i]}; // aktuelles Zeichen
 
         if (chr == ' ' || chr == '+' || chr == '.' || std::isalpha(chr))
             continue; // isalpha() : bool IstBuchstabe()
@@ -101,18 +101,20 @@ void Tle::print(void) const // Ausgabe gesamtes TLE
 
     // Info: Zeilenumbruch für nächstes Element wird stets im vorherigen Schritt durchgeführt
 
-    uint32_t counter {0}; // Temporärer Counter für mehrere Zwischenoperationen
+    uint32_t counter{0}; // Temporärer Counter für mehrere Zwischenoperationen
     // ##
     std::cout << "satelliteName\t:\t";
     counter = 25;
-    while (counter--) std::cout << this->getSatelliteName()[24 - counter];
+    while (counter--)
+        std::cout << this->getSatelliteName()[24 - counter];
     std::cout << '\n';
     // ##
     std::cout << "satelliteNr\t:\t" << this->getSatelliteNr() << '\n';
     // ##
     std::cout << "intDesignator\t:\t";
     counter = 9;
-    while (counter--) std::cout << this->getintDesignator()[8 - counter];
+    while (counter--)
+        std::cout << this->getintDesignator()[8 - counter];
     std::cout << '\n';
     // ##
     std::cout << "year\t\t:\t" << this->getYear() << '\n';
@@ -148,8 +150,8 @@ void Tle::print(void) const // Ausgabe gesamtes TLE
         // - Große Halbachse a
         // - Wahre Anomalie
 
-        const double _a {get_a(this->getMeanMotion())}; // Einheit: [km]
-        const double _ny {getTrueAnomaly(this->getEccentricity(), this->getMeanAnomaly())};
+        const double _a{get_a(this->getMeanMotion())}; // Einheit: [km]
+        const double _ny{getTrueAnomaly(this->getEccentricity(), this->getMeanAnomaly())};
 
         std::cout << "Zusätzliche Bahnelemente:"
                   << "\n\n";
