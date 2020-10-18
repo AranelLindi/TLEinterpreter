@@ -30,7 +30,7 @@ int main(void)
     // Iteriert durch map und löst für jedes Element Funktion print() aus. (Lambda-Ausdruck! Erfordert C++11!)
     std::for_each(TLEs.begin(), TLEs.end(), [](std::pair<int, Tle> element) {
         Tle currentTLE = element.second; // gibt zweiten Typ der map zurück (TLE)
-        if (SONATE_ONLY && (currentTLE.getSatelliteNr() != SONATE_NUMBER))
+        if (SONATE_ONLY && (currentTLE.getSatelliteNo() != SONATE_NUMBER))
             goto next;
         currentTLE.print(); // ruft print()-Funktion in struct auf
     next:;

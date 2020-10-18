@@ -5,9 +5,9 @@ extern const bool SONATE_ONLY; // Gibt an ob nur für Objekt SONATE Ausgabe vorg
 
 // Überladungen der in der Headerdatei (TLE.h) definierten Funktionen
 
-Tle::Tle() {} // Standardkonstruktor
+Tle::Tle() noexcept {} // Standardkonstruktor
 
-Tle::Tle(const std::string &line0, const std::string &line1, const std::string &line2) : satelliteNr(0), year(0), dayFraction(0), bStar(0), inclination(0), raan(0), eccentricity(0), argumentOfPerigee(0), meanAnomaly(0), meanMotion(0) // Konstruktor
+Tle::Tle(const std::string &line0, const std::string &line1, const std::string &line2) : satelliteNo(0), year(0), dayFraction(0), bStar(0), inclination(0), raan(0), eccentricity(0), argumentOfPerigee(0), meanAnomaly(0), meanMotion(0) // Konstruktor
 {
     // weiterführende Funktion aufrufen
     this->populateTle(line0, line1, line2);
@@ -22,7 +22,7 @@ void Tle::populateTle(const std::string &line0, const std::string &line1, const 
     strcpy((this->satelliteName), line0.substr(Satellite_Name_pos, Satellite_Name_length).c_str());
     // # LINE 1
     // Satelliten-Nummer:
-    this->satelliteNr = getInteger(line1, Satellite_Number_pos, Satellite_Number_length);
+    this->satelliteNo = getInteger(line1, Satellite_Number_pos, Satellite_Number_length);
     // International Designator: (mehrere Informationen gebündelt!)
     strcpy((this->intDesignator), line1.substr(International_Designator_Year_pos, International_Designator_Year_length + International_Designator_PieceOfLaunch_length).c_str());
     // year
@@ -53,28 +53,28 @@ void Tle::populateTle(const std::string &line0, const std::string &line1, const 
 }
 
 // GETTER
-std::string Tle::getSatelliteName() const { return std::string(this->satelliteName); }
-int32_t Tle::getSatelliteNr() const { return this->satelliteNr; }
-std::string Tle::getintDesignator() const { return std::string(this->intDesignator); }
-int32_t Tle::getYear() const { return this->year; }
-double Tle::getDayFraction() const { return this->dayFraction; }
-double Tle::getBstar() const { return this->bStar; }
+std::string Tle::getSatelliteName() const noexcept { return std::string(this->satelliteName); }
+int32_t Tle::getSatelliteNo() const noexcept { return this->satelliteNo; }
+std::string Tle::getintDesignator() const noexcept { return std::string(this->intDesignator); }
+int32_t Tle::getYear() const noexcept { return this->year; }
+double Tle::getDayFraction() const noexcept { return this->dayFraction; }
+double Tle::getBstar() const noexcept { return this->bStar; }
 
 // Rückgabe erfolgt stets in [rad] bzw. [rad/min]! (siehe 'Einlesen'!)
-double Tle::getInclination() const { return this->inclination; }
-double Tle::getRaan() const { return this->raan; }
-double Tle::getEccentricity() const { return this->eccentricity; }
-double Tle::getArgumentOfPerigee() const { return this->argumentOfPerigee; }
-double Tle::getMeanAnomaly() const { return this->meanAnomaly; }
-double Tle::getMeanMotion() const { return this->meanMotion; }
+double Tle::getInclination() const noexcept { return this->inclination; }
+double Tle::getRaan() const noexcept { return this->raan; }
+double Tle::getEccentricity() const noexcept { return this->eccentricity; }
+double Tle::getArgumentOfPerigee() const noexcept { return this->argumentOfPerigee; }
+double Tle::getMeanAnomaly() const noexcept { return this->meanAnomaly; }
+double Tle::getMeanMotion() const noexcept { return this->meanMotion; }
 
-bool Tle::isTleLineValid(const std::string &line) const // prüft für Zeile Gültigkeit
+bool Tle::isTleLineValid(const std::string &line) const noexcept // prüft für Zeile Gültigkeit
 {
     uint16_t sum{0}; // summiert alles auf (Feldwerte)
 
     // Fallunterscheidung: Ziffern addieren, Minuszeichen mit '1' bewerten, restliche Zeichen ignorieren
     // Ergebnis modulo 10 nehmen und mit Checksum der Zeile vergleichen (69). Bool zurückgeben.
-    for (int i{0}; i < 68; i++)
+    for (uint8_t i{0}; i < 68; i++)
     {
         const int8_t chr{line[i]}; // aktuelles Zeichen
 
@@ -95,7 +95,7 @@ bool Tle::isTleLineValid(const std::string &line) const // prüft für Zeile Gü
     return (line[68] - '0') == sum;
 }
 
-void Tle::print(void) const // Ausgabe gesamtes TLE
+void Tle::print(void) const noexcept // Ausgabe gesamtes TLE
 {
     std::cout.precision(8); // Ändert die Anzahl der ausgegebenen Nachkommastellen.
 
@@ -109,7 +109,7 @@ void Tle::print(void) const // Ausgabe gesamtes TLE
         std::cout << this->getSatelliteName()[24 - counter];
     std::cout << '\n';
     // ##
-    std::cout << "satelliteNr\t:\t" << this->getSatelliteNr() << '\n';
+    std::cout << "satelliteNo\t:\t" << this->getSatelliteNo() << '\n';
     // ##
     std::cout << "intDesignator\t:\t";
     counter = 9;

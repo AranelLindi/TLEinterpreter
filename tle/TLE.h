@@ -15,7 +15,7 @@ class Tle
 
     // Variablen
     char satelliteName[25]{'\0'}; ///< name of the satellite
-    int32_t satelliteNr;          ///< satellite catalog nr
+    int32_t satelliteNo;          ///< satellite catalog nr
     char intDesignator[9]{'\0'};  ///< international designator
     int32_t year;                 ///< year of the epoch (e. g. 2020)
     double dayFraction;           ///< day fraction of the epoch
@@ -32,26 +32,26 @@ class Tle
 
 public:
     // Getter
-    std::string getSatelliteName() const;
-    int32_t getSatelliteNr() const;
-    std::string getintDesignator() const;
-    int32_t getYear() const;
-    double getDayFraction() const;
-    double getBstar() const;
+    std::string getSatelliteName() const noexcept;
+    int32_t getSatelliteNo() const noexcept;
+    std::string getintDesignator() const noexcept;
+    int32_t getYear() const noexcept;
+    double getDayFraction() const noexcept;
+    double getBstar() const noexcept;
 
-    double getInclination() const;
-    double getRaan() const;
-    double getEccentricity() const;
-    double getArgumentOfPerigee() const;
-    double getMeanAnomaly() const;
-    double getMeanMotion() const;
+    double getInclination() const noexcept;
+    double getRaan() const noexcept;
+    double getEccentricity() const noexcept;
+    double getArgumentOfPerigee() const noexcept;
+    double getMeanAnomaly() const noexcept;
+    double getMeanMotion() const noexcept;
 
     // ******
-    Tle();                                                                             // Standartkonstruktor (wird von Interpreter nicht verwendet!)
+    Tle() noexcept;                                                                    // Standartkonstruktor (wird von Interpreter nicht verwendet!)
     Tle(const std::string &line0, const std::string &line1, const std::string &line2); // Konstruktor
 
     // Funktionen
     void populateTle(const std::string &line0, const std::string &line1, const std::string &line2); // wird von Konstruktor aufgerufen
-    bool isTleLineValid(const std::string &line) const;                                             // prüft für übergebene Zeile Gültigkeit (Prüfsumme)
-    void print(void) const;                                                                         // gibt gesamtes TLE auf Konsole aus
+    bool isTleLineValid(const std::string &line) const noexcept;                                    // prüft für übergebene Zeile Gültigkeit (Prüfsumme)
+    void print(void) const noexcept;                                                                // gibt gesamtes TLE auf Konsole aus
 };

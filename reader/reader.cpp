@@ -24,9 +24,7 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
 
             std::string line_str; // temporärer Zwischenspeicher für immer jeweils eine Zeile (Strings sind veränderbar)
 
-            int32_t key{0}; // enthält später die Satelliten-Nr
-
-            for (int i = 0; i < 3; i++) // gleiche Prodzedur für jede der drei Zeilen des TLE
+            for (uint8_t i{0}; i < 3; i++) // gleiche Prodzedur für jede der drei Zeilen des TLE
             {
                 std::getline(file, line_str); // schreibt Zeile in string Variable
 
@@ -44,9 +42,9 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
             if (lastTle == true)
                 break; // Gehört zur Abbruchbedingung: while-Schleife beenden
 
-            key = getInteger(*lineptr[1].get(), Satellite_Number_pos, Satellite_Number_length); // Satelliten-Nr. aus zweiten Zeile extrahieren
+            const int32_t key = getInteger(*lineptr[1].get(), Satellite_Number_pos, Satellite_Number_length); // Satelliten-Nr. aus zweiten Zeile extrahieren
 
-            const Tle tle {Tle(*lineptr[0].get(), *lineptr[1].get(), *lineptr[2].get())}; // neues TLE Objekt anlegen & Zeilen an Konstruktor übergeben...
+            const Tle tle{Tle(*lineptr[0].get(), *lineptr[1].get(), *lineptr[2].get())}; // neues TLE Objekt anlegen & Zeilen an Konstruktor übergeben...
 
             // prüfen ob Zeile 2 und 3 gültig sind, falls nicht, nicht parsen und TLE nicht aufnehmen:
             if (tle.isTleLineValid(*lineptr[1].get()) && tle.isTleLineValid(*lineptr[2].get()))
@@ -66,6 +64,7 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
 
     // Auch nach Exception wird dieser Bereich hier noch ausgeführt. Bereinigungen vornehmen und Rückgabe der TLEs:
     file.close();
+    file.clear();
 
     return TLEs; // fertige map zurückgeben
 }
@@ -73,7 +72,7 @@ std::map<int, Tle> readTlesFromFile(const char *fileName)
 int32_t getInteger(const std::string &source, int32_t start, int32_t len) // Gibt Zahl aus TLE als Integer zurück
 {
     //char *str_number = getSubString(source, start, end); // Zeiger auf Teilstring
-    std::string str_number{source.substr(start, len)};
+    std::string_view str_number{source.substr(start, len)};
 
     // ******************************** WICHTIG ! *******************************
     // Prüfen ob Zeichen im String stehen, die bei einer Konvertierung Fehler verursachen würden:
@@ -88,12 +87,12 @@ int32_t getInteger(const std::string &source, int32_t start, int32_t len) // Gib
     //str_number = getSubString(source, start + counter, end);
     // **************************************************************************
 
-    const int32_t number{std::stoi(str_number)}; // string in int konvertieren
+    const int32_t number{std::stoi(std::string{str_number})}; // string in int konvertieren
 
     return number;
 }
 
-double getDouble(const std::string &source, int32_t start, int32_t len, bool leadingdecimalpointassumed) // Gibt Nummer aus TLE als Double zurück (mit Column-Daten aus Definition arbeiten!)
+double getDouble(const std::string_view &source, int32_t start, int32_t len, bool leadingdecimalpointassumed) // Gibt Nummer aus TLE als Double zurück (mit Column-Daten aus Definition arbeiten!)
 {
     std::string str_number{source.substr(start, len)}; // getSubString(source, start, end); // Zeiger auf Teilstring
 
@@ -129,7 +128,7 @@ double getDouble(const std::string &source, int32_t start, int32_t len, bool lea
     uint16_t pos{0};
     // von hinten nach vorne nach einem Minus suchen (das ist dann der Exponent). Erste Stelle auslassen, könnte ein normales Vorzeichen sein!
     // Letzte (und erste) Stelle ebenfalls auslassen, ein Minus dort ergäbe keinen Sinn. (NNNN-) (Deswegen i=...-1 !)
-    for (uint32_t i {(str_number.length()) - 1}; i > 1; i--)
+    for (uint64_t i{(str_number.length()) - 1}; i > 1; i--)
     {
         if (str_number[i] == '-' || str_number[i] == '+')
         {
@@ -143,7 +142,7 @@ double getDouble(const std::string &source, int32_t start, int32_t len, bool lea
 
     if (pos != 0) // wird nur ausgeführt, wenn ein Exponent erkannt wurde (Minus inmitten der Zahl)
     {
-        std::string exponent {str_number.substr(pos + 1, len - pos)};
+        const std::string exponent{str_number.substr(pos + 1, len - pos)};
 
         // Exponenten als Integer darstellen:
         int32_t exp = (std::stoi(exponent));
@@ -151,10 +150,10 @@ double getDouble(const std::string &source, int32_t start, int32_t len, bool lea
             exp = -exp; // ggf. Vorzeichenwechsel
 
         // Mantisse in double konvertieren
-        std::string mantisseptr {str_number.substr(0, pos - 1)};
+        std::string mantisseptr{str_number.substr(0, pos - 1)};
 
         // Mantisse zusammensetzen: (ruft Lambda auf!)
-        double mantisse {std::stod(mantisseptr)};
+        const double mantisse{std::stod(mantisseptr)};
 
         // Komplette Zahl konstruieren: (Mantisse, Exponenten)
         number = mantisse * std::pow(10, exp);
@@ -171,17 +170,18 @@ double getDouble(const std::string &source, int32_t start, int32_t len, bool lea
     return number;
 }
 
-double get_a(double f) // Berechnet über die mittlere Bewegungszeit und der Konstanten GM die große Halbachse a in Kilometern [km] !
+double get_a(double n) noexcept // Berechnet über die mittlere Bewegungszeit und der Konstanten GM die große Halbachse a in Kilometern [km] !
 {
-    if (f == 0)
-        return 0; // Fall T = 0 abdecken (durch Null teilen!)
+    // n = Mittlere Bewegung in rad/min
+    if (n == 0.0)
+        return 0; // Fall n = 0 abdecken (durch Null teilen!)
 
-    const double T_in_s{2 * M_PI * 60 * (1 / f)}; // Enthält Anzahl Sekunden pro Umlauf (T)
+    const double T_in_s{2 * M_PI * 60 * (1 / n)}; // Enthält Anzahl Sekunden pro Umlauf (T)
 
     return (cbrt(0.25 * GM * (powf(T_in_s / M_PI, 2)))) / 1000; // Berechnung in km!
 }
 
-double getTrueAnomaly(double e, double M) // Berechnet mittels Newton-Verfahren und numerische Exzentrizität sowie mittlerer Anomalie die wahre Anomalie (Newton-Verfahren)
+double getTrueAnomaly(double e, double M) noexcept // Berechnet mittels Newton-Verfahren und numerische Exzentrizität sowie mittlerer Anomalie die wahre Anomalie (Newton-Verfahren)
 {
     // Kepler-Gleichung: M = E - e * sin( E )
     // -> wird umgestellt zu: 0 = E - e * sin( E ) - M
@@ -193,9 +193,9 @@ double getTrueAnomaly(double e, double M) // Berechnet mittels Newton-Verfahren 
     const auto f = [e](double x) -> double { return (1 - e * cos(x)); };
 
     // Newton Verfahren
-    for (uint8_t i = 0; i < 10; i++)
+    for (uint8_t i{0}; i < 10; i++)
     {
-        if (f(x0) == 0)
+        if (f(x0) == 0.0)
             break; // Division durch Null abfangen
 
         x0 = x0 - (F(x0) / f(x0)); // Newton-Verfahren
@@ -209,27 +209,27 @@ double getTrueAnomaly(double e, double M) // Berechnet mittels Newton-Verfahren 
     return (trueAnomaly < 0 ? trueAnomaly + (2 * M_PI) : trueAnomaly);
 }
 
-double revPerDay2RadPerMin(double value) // Wandelt Zahl von [rev/day] in [rad/min] um
+double revPerDay2RadPerMin(double value) noexcept // Wandelt Zahl von [rev/day] in [rad/min] um
 {
     return (value * (2 * M_PI) / (60 * 24));
 }
 
-double radPerMin2RevPerDay(double value) // Wandelt Zahl von [rad/min] in [rev/day] um
+double radPerMin2RevPerDay(double value) noexcept // Wandelt Zahl von [rad/min] in [rev/day] um
 {
     return (value * (60 * 24) / (2 * M_PI));
 }
 
-double deg2rad(double angle) // Wandelt [degree] in [rad] um
+double deg2rad(double angle) noexcept // Wandelt [degree] in [rad] um
 {
     return (angle * M_PI / 180.0);
 }
 
-double rad2deg(double rad) // Wandelt [rad] in [degree] um
+double rad2deg(double rad) noexcept // Wandelt [rad] in [degree] um
 {
     return (rad * 180.0 / M_PI);
 }
 
-int32_t checkyear(unsigned int value)
+int32_t checkyear(unsigned int value) noexcept
 {
     // NORAD definiert Epochen wie folgt:
     // 57 - 99 entspricht 1957 - 1999
@@ -239,5 +239,5 @@ int32_t checkyear(unsigned int value)
     else if (value > 56)
         return (1900 + value);
     else
-        return -1;
+        return 0; // 0 wird willkürlich als Fehlerflag festgelegt
 }
